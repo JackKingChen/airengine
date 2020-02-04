@@ -1,0 +1,15 @@
+cbuffer cbClipPlane
+{
+    int nClipEnable;
+    float4 clipPlane;
+};
+
+float CaculateClipPlane(float4 worldPos, matrix matWorld)
+{
+    return dot(mul(worldPos, matWorld), clipPlane);
+}
+
+float CaculateClipNoMatrix(float4 worldPos)
+{
+    return dot(worldPos, clipPlane);
+}

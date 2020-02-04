@@ -1,0 +1,73 @@
+#include "VertexDef.txt"
+
+#define VS_INPUT VS_InstancingInput
+
+#ifdef RENDER_TO_SHADOWMAP
+#define VS_OUTPUT VS_MeshRenderToShadowmapOutput
+#elif defined(RENDER_TO_GBUFFER)
+#define VS_OUTPUT VS_MeshRenderToGBufferOutput
+#else 
+  #ifdef SHADOWMAP
+    #ifdef LIGHT_PRE_PASS
+#define VS_OUTPUT VS_MeshLPPWithShadowOutput    //既接受shadowmap也接受lightprepass
+    #else
+#define VS_OUTPUT VS_MeshAcceptShadowOutput  //只接受shadowmap
+    #endif
+  #else
+    #ifdef LIGHT_PRE_PASS
+#define VS_OUTPUT VS_MeshLPPOutput
+    #else
+#define VS_OUTPUT VS_MeshOutput
+    #endif
+  #endif
+#endif
+
+
+matrix viewMatrix;
+matrix projectionMatrix;
+matrix WorldViewMatrix;
+matrix LightSpaceProjMatrix;
+//matrix worldMatrix;
+
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+    VS_OUTPUT output = (VS_OUTPUT)0;
+
+    float4x4 worldMatrix = float4x4(input.row1, input.row2, input.row3, input.row4);
+
+    output.position = mul(input.position, worldMatrix);
+    output.position = mul(output.position, viewMatrix);
+    output.position = mul(output.position, projectionMatrix);
+
+    output.texCoords = input.uvCoords;
+
+#ifdef RENDER_TO_SHADOWMAP
+    return output;
+#else
+  #ifdef RENDER_TO_GBUFFER
+    output.DepthInView = mul(input.position, WorldViewMatrix).z; 
+    output.normal = mul(float4(input.normal, 0), WorldViewMatrix);
+    return output;
+  #else
+    output.color = input.instanceColor;
+  #endif
+#endif
+
+#ifdef SHADOWMAP
+    float4 vNor = float4( input.normal, 0 );
+    //output.normal = mul(vNor, worldMatrix).xyz;
+    output.posInLight = mul(input.position, LightSpaceProjMatrix);
+  #ifdef LIGHT_PRE_PASS
+    // 既接收shadowmap也接收lpp
+    output.posProj = output.position;
+  #else
+    
+  #endif
+#else
+  #ifdef LIGHT_PRE_PASS
+    output.posProj = output.position;
+  #endif
+#endif
+
+    return output;
+}

@@ -1,0 +1,32 @@
+
+struct VS_INPUT
+{
+    float4 position     : POSITION;
+    float4 color        : COLOR;
+    float2 uvCoords     : TEXCOORD;
+};
+
+struct VS_OUTPUT
+{
+   float4  pos          : SV_POSITION;
+   float2  texCoord     : TEXCOORD;
+};
+
+cbuffer cbPerObject
+{
+    matrix projectionMatrix;
+};
+ 
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+   VS_OUTPUT ouput = (VS_OUTPUT)0;
+ 
+   //input.position.xy = sign( input.position.xy );
+   //ouput.pos = float4( input.position.xy, 0.0f, 1.0f );
+   ouput.pos = mul(float4( input.position.xyz, 1.0f ), projectionMatrix);
+ 
+   // get into range [0,1]
+   ouput.texCoord = input.uvCoords; //(float2(ouput.pos.x, -ouput.pos.y) + 1.0f)/2.0f;
+   
+   return ouput;
+}

@@ -1,0 +1,40 @@
+sampler texBase;        
+
+struct VS_OUTPUT
+{
+    float4 position : 	POSITION;
+    float4 color : 	COLOR0;
+    float2 uvCoords : 	TEXCOORD0;
+};
+
+
+struct PS_OUTPUT
+{
+    float4 color :      COLOR0;
+};
+
+
+float   frameTime;  
+float4  TLColor;  
+float	TLWholeMesh;  
+
+
+PS_OUTPUT PSMain(VS_OUTPUT input)
+{
+	PS_OUTPUT output = (PS_OUTPUT)0;
+	
+	float4  baseColor = tex2D(texBase, input.uvCoords);
+	
+	if ( TLWholeMesh == 0.0 )
+	{
+		float4 interp = baseColor.a * TLColor;	
+		output.color = baseColor + interp;
+	}
+	else
+	{
+		output.color = baseColor * 1.5;
+	}
+
+	return output;
+};
+

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Materials ver="1.0">
+    <Material Name="block_0" template="terrain_material_template.xml">
+		<!--
+		<Technique Name="Default">
+			<Pass Name="" TextureCount="4" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain">
+				<RenderStates>
+					<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+					<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSTerrain"/>
+				<PixelShader Name="PSTerrain"/>
+			</Pass>
+		</Technique>
+		<LightParam DIFFUSE="(1.000000,1.000000,1.000000,1.000000)" SPECULAR="(0.000000,0.000000,0.000000,1.000000)" EMISSIVE="(0.000000,0.000000,0.000000,1.000000)" AMBIENT="(1.000000,1.000000,1.000000,1.000000)" SHINESS="255.0000"/>
+		-->
+		<SamplerStateObject name="SampRGB" file="TestScene_pass0_block0.png" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_CLAMP" AddressV="TADDRESS_CLAMP" AddressW="TADDRESS_CLAMP"/>
+		<SamplerStateObject name="Samp0" file="dibiao000000.dds" stage="1" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="Samp1" file="dibiao000008.dds" stage="2" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="Samp2" file="dibiao006.dds" stage="3" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<MaterialParams>
+			<var name="SampRGB" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="TestScene_pass0_block0.png" />
+			<var name="Samp0" constantType="CS_FLOAT" VariantType="VAR_TEXTURE" value="dibiao000000.dds" />
+			<var name="Samp1" constantType="CS_FLOAT" VariantType="VAR_TEXTURE" value="dibiao000008.dds" />
+			<var name="Samp2" constantType="CS_FLOAT" VariantType="VAR_TEXTURE" value="dibiao006.dds" />
+			<var name="uvScales0" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(40.000000,40.000000)" />
+			<var name="uvScales1" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(40.000000,40.000000)" />
+			<var name="uvScales2" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(40.000000,40.000000)" />
+		</MaterialParams>
+	</Material>
+	<Material Name="block_1" template="terrain_material_template.xml">
+		<!--
+		<Technique Name="Default">
+			<Pass Name="" TextureCount="4" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain">
+				<RenderStates>
+				<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSTerrain"/>
+				<PixelShader Name="PSTerrain"/>
+			</Pass>
+		</Technique>
+		<LightParam DIFFUSE="(1.000000,1.000000,1.000000,1.000000)" SPECULAR="(0.000000,0.000000,0.000000,1.000000)" EMISSIVE="(0.000000,0.000000,0.000000,1.000000)" AMBIENT="(1.000000,1.000000,1.000000,1.000000)" SHINESS="255.0000"/>
+		-->
+		<SamplerStateObject name="SampRGB" file="TestScene_pass0_block1.png" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_CLAMP" AddressV="TADDRESS_CLAMP" AddressW="TADDRESS_CLAMP"/>
+		<SamplerStateObject name="Samp0" file="dibiao000000.dds" stage="1" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="Samp1" file="dibiao000008.dds" stage="2" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="Samp2" file="dibiao000007.dds" stage="3" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<MaterialParams>
+			<var name="SampRGB" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="TestScene_pass0_block1.png" />
+			<var name="Samp0" constantType="CS_FLOAT" VariantType="VAR_TEXTURE" value="dibiao000000.dds" />
+			<var name="Samp1" constantType="CS_FLOAT" VariantType="VAR_TEXTURE" value="dibiao000008.dds" />
+			<var name="Samp2" constantType="CS_FLOAT" VariantType="VAR_TEXTURE" value="dibiao000007.dds" />
+			<var name="uvScales0" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(40.000000,40.000000)" />
+			<var name="uvScales1" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(40.000000,40.000000)" />
+			<var name="uvScales2" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(40.000000,40.000000)" />
+		</MaterialParams>
+	</Material>
+	<Material Name="block_2" template="terrain_material_template.xml">
+		<!--
+		<Technique Name="Default">
+			<Pass Name="" TextureCount="3" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain">
+			<RenderStates>
+			<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+			<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+			<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+			<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+			</RenderStates>
+			<VertexShader Name="VSTerrain"/>
+			<PixelShader Name="PSTerrain"/>
+			</Pass>
+		</Technique>
+		<LightParam DIFFUSE="(1.000000,1.000000,1.000000,1.000000)" SPECULAR="(0.000000,0.000000,0.000000,1.000000)" EMISSIVE="(0.000000,0.000000,0.000000,1.000000)" AMBIENT="(1.000000,1.000000,1.000000,1.000000)" SHINESS="255.0000"/>
+		-->
+		<SamplerStateObject name="SampRGB" file="TestScene_pass0_block2.png" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_CLAMP" AddressV="TADDRESS_CLAMP" AddressW="TADDRESS_CLAMP"/>
+		<SamplerStateObject name="Samp0" file="dibiao000000.dds" stage="1" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="Samp1" file="dibiao000008.dds" stage="2" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<MaterialParams>
+			<var name="SampRGB" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="TestScene_pass0_block2.png" />
+			<var name="Samp0" constantType="CS_FLOAT" VariantType="VAR_TEXTURE" value="dibiao000000.dds" />
+			<var name="Samp1" constantType="CS_FLOAT" VariantType="VAR_TEXTURE" value="dibiao000008.dds" />
+			<var name="uvScales0" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(40.000000,40.000000)" />
+			<var name="uvScales1" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(40.000000,40.000000)" />
+		</MaterialParams>
+	</Material>
+	<Material Name="block_3" template="terrain_material_template.xml">
+		<!--
+		<Technique Name="Default">
+			<Pass Name="" TextureCount="4" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain">
+			<RenderStates>
+			<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+			<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+			<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+			<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+			</RenderStates>
+			<VertexShader Name="VSTerrain"/>
+			<PixelShader Name="PSTerrain"/>
+			</Pass>
+		</Technique>
+		<LightParam DIFFUSE="(1.000000,1.000000,1.000000,1.000000)" SPECULAR="(0.000000,0.000000,0.000000,1.000000)" EMISSIVE="(0.000000,0.000000,0.000000,1.000000)" AMBIENT="(1.000000,1.000000,1.000000,1.000000)" SHINESS="255.0000"/>
+		-->
+		<SamplerStateObject name="SampRGB" file="TestScene_pass0_block3.png" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_CLAMP" AddressV="TADDRESS_CLAMP" AddressW="TADDRESS_CLAMP"/>
+		<SamplerStateObject name="Samp0" file="dibiao000000.dds" stage="1" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="Samp1" file="dibiao000008.dds" stage="2" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="Samp2" file="dibiao000007.dds" stage="3" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<MaterialParams>
+			<var name="SampRGB" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="TestScene_pass0_block3.png" />
+			<var name="Samp0" constantType="CS_FLOAT" VariantType="VAR_TEXTURE" value="dibiao000000.dds" />
+			<var name="Samp1" constantType="CS_FLOAT" VariantType="VAR_TEXTURE" value="dibiao000008.dds" />
+			<var name="Samp2" constantType="CS_FLOAT" VariantType="VAR_TEXTURE" value="dibiao000007.dds" />
+			<var name="uvScales0" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(40.000000,40.000000)" />
+			<var name="uvScales1" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(40.000000,40.000000)" />
+			<var name="uvScales2" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(40.000000,40.000000)" />
+			<var name="ks" constantType="CS_FLOAT" VariantType="VAR_FLOAT4" value="(0.000000,0.000000,0.000000,1.000000)" />
+			<var name="kd" constantType="CS_FLOAT" VariantType="VAR_FLOAT4" value="(1.000000,1.000000,1.000000,1.000000)" />
+			<var name="ka" constantType="CS_FLOAT" VariantType="VAR_FLOAT4" value="(1.000000,1.000000,1.000000,1.000000)" />
+		</MaterialParams>
+	</Material>
+</Materials>

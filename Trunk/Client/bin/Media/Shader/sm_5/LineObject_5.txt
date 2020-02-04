@@ -1,0 +1,23 @@
+matrix wvpMatrix;
+
+struct VS_LineObjectOutput
+{
+    float4 position	: SV_POSITION;
+    float4 color : COLOR0;
+};
+
+VS_LineObjectOutput VSMain(in float3 pos : POSITION, in float4 color : COLOR)
+{
+    VS_LineObjectOutput output = (VS_LineObjectOutput)0;
+	
+    output.position = mul(float4(pos, 1.0), wvpMatrix);
+    output.color = color;
+	
+    return output;
+}
+
+float4 PSMain( VS_LineObjectOutput input ) : SV_TARGET
+{
+    //float4 texCol = tex2D(samplerMesh, input.texCoords);
+    return input.color;
+}

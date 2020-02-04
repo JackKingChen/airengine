@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="gb2312"?>
+
+<Material Name="WaterTemplate">
+	<Technique Name="Water" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+		<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain" VertexDeclaration="E_VB_STANDARD">
+			<RenderStates>
+				<BlendState BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+				<DepthStencilState ZEnable="TRUE" ZWrite="FALSE" StencilEnable="FALSE" ZCompareFunc="eCF_LESS_EQUAL"/>
+				<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+			</RenderStates>
+		</Pass>
+		<Macro Name = "HAS_REFLECT" Definition = "0"/>
+		<Macro Name = "HAS_REFRACT" Definition = "0"/>
+	</Technique>
+	<VertexShader file="VSWater.txt"/>
+	<PixelShader file="PSWater.txt">
+		<!-- 只用于gles2 -->
+		<TextureUnit name="Samp0" unit="0" />
+		<TextureUnit name="ReflectMap" unit="1" />
+		<TextureUnit name="RefractMap" unit="2" />
+		<TextureUnit name="BumpMap" unit="3" />
+		<!--<TextureUnit name="HeightMap" unit="4" />-->
+	</PixelShader>
+	<MaterialParams>
+		<var name="distorsion" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="0.050000"/>
+		<var name="flowDirection" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(-0.173648,0.984808)"/>
+		<var name="flowSpeed" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="0.002000"/>
+		<var name="gradient" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="100.000000"/>
+		<var name="waterShiness" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="100.000000"/>
+		<var name="baseUVScale" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(10.000000,10.000000)"/>
+		<var name="Samp0" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="water.jpg" />
+		<var name="ReflectMap" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		<var name="RefractMap" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		<var name="BumpMap" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="wavesbump.dds" />
+		<var name="HeightMap" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		<var name="DepthMap" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+	</MaterialParams>
+</Material>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Imageset Name="Number" Imagefile="Numbers01.tga" NativeHorzRes="1024" NativeVertRes="768" Width="256" Height="256" AutoScaled="true" >
+    <Image Name="1" XPos="0" YPos="0" Width="32" Height="64" X0="0" Y0="0" X1="32" Y1="64" />
+    <Image Name="2" XPos="32" YPos="0" Width="32" Height="64" X0="32" Y0="0" X1="64" Y1="64" />
+    <Image Name="3" XPos="64" YPos="0" Width="32" Height="64" X0="64" Y0="0" X1="96" Y1="64" />
+    <Image Name="4" XPos="96" YPos="0" Width="32" Height="64" X0="96" Y0="0" X1="128" Y1="64" />
+    <Image Name="5" XPos="128" YPos="0" Width="32" Height="64" X0="128" Y0="0" X1="160" Y1="64" />
+    <Image Name="6" XPos="160" YPos="0" Width="32" Height="64" X0="160" Y0="0" X1="192" Y1="64" />
+    <Image Name="7" XPos="192" YPos="0" Width="32" Height="64" X0="192" Y0="0" X1="224" Y1="64" />
+    <Image Name="8" XPos="224" YPos="0" Width="32" Height="64" X0="224" Y0="0" X1="256" Y1="64" />
+    <Image Name="9" XPos="0" YPos="64" Width="32" Height="64" X0="0" Y0="64" X1="32" Y1="128" />
+    <Image Name="0" XPos="32" YPos="64" Width="32" Height="64" X0="32" Y0="64" X1="64" Y1="128" />
+    <Image Name="-" XPos="64" YPos="64" Width="32" Height="64" X0="64" Y0="64" X1="96" Y1="128" />
+</Imageset>

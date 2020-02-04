@@ -1,0 +1,66 @@
+sampler samplerMesh;    //mesh自己的纹理
+#include "SpeedTree.txt"
+#include "PSShadowmapInclude.txt"
+#include "PSLightPrePass.txt"
+
+float4 fogColor;
+float2 halfPixel;
+float4  ambientColor; 
+float3 cameraPos;
+float3 ks;
+float3 kd;
+float3 ka;
+
+float2 postProjToScreen(float4 position) 
+{     
+    float2 screenPos = position.xy / position.w;     
+    return (0.5f * (float2(screenPos.x, -screenPos.y) + 1)); 
+}   
+
+
+#ifdef SHADOWMAP
+  #ifdef LIGHT_PRE_PASS
+#define PS_INPUT PS_SpeedTreeLPPWithShadowmapInput
+  #else
+#define PS_INPUT PS_SpeedTreeAcceptShadowmapInput
+  #endif
+#elif defined(LIGHT_PRE_PASS)
+#define PS_INPUT PS_SpeedTreeLPPInput
+#else
+//什么也没定义
+#define PS_INPUT PS_SpeedTreeInput
+#endif
+
+
+float4 PSMain(PS_INPUT input, float2 vPos : VPOS) : COLOR
+{
+    float4 output = tex2D(samplerMesh, input.texCoords) * input.color;
+    clip(output.a - 0.2);
+
+#ifdef SHADOWMAP
+    float shadow = CaculateShadow(vPos, input.posInLight, ambientColor, 16);
+  #ifdef LIGHT_PRE_PASS
+    float2 scrCoord = postProjToScreen(input.posProj) - halfPixel; 
+    float4 light = CaculateLight(scrCoord); //tex2D(samplerLight, scrCoord);   
+
+    output.rgb = saturate((ka * ambientColor.rgb + kd * light.rgb + ks * light.aaa) * output.rgb); 
+  #endif
+    output *= float4(shadow, shadow, shadow, 1);
+#else
+  #ifdef LIGHT_PRE_PASS
+    float2 scrCoord = postProjToScreen(input.posProj) - halfPixel; 
+    float4 light = CaculateLight(scrCoord); //tex2D(samplerLight, scrCoord);   
+
+    output.rgb = saturate((ka * ambientColor.rgb + kd * light.rgb + ks * light.aaa) * output.rgb); 
+  #endif
+#endif
+    output.rgb = lerp(fogColor.rgb, output.rgb, input.fogFactor);
+
+    return output;
+}
+
+
+
+
+
+

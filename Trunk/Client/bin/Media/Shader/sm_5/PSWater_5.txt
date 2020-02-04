@@ -1,0 +1,248 @@
+#include "Fog_5.txt"
+
+Texture2D texSamp0;
+Texture2D texReflectMap : register(t1);
+Texture2D texRefractMap : register(t2);
+Texture2D texBumpMap : register(t3);
+Texture2D texHeightMap : register(t4);
+Texture2D texDepthMap : register(t11);
+
+SamplerState Samp0;          // 水基本纹理
+SamplerState ReflectMap : register(s1);     // 反射纹理
+SamplerState RefractMap : register(s2);     // 折射纹理
+SamplerState BumpMap : register(s3);        // bumpmap贴图
+SamplerState HeightMap : register(s4);       // 深度贴图
+SamplerState DepthMap : register(s11);
+
+cbuffer cbPSWater
+{
+    float3  cameraPos;      // 摄像机位置
+    float   frameTime;      // 系统时间值
+    float   distorsion;     // 波浪扰动参数
+    float2  flowDirection;  // 波浪方向
+    float   flowSpeed;      // 波浪速度
+    //float4  fogColor;       // 雾颜色
+
+    float4  ambientColor;   // 环境光颜色
+    float3  sunLight;       // 太阳光方向
+    float   waterShiness;   // 水体的高光
+    float3  waterFogColor;  // 水底下雾的颜色
+    float   gradient;       // 水的透明最大距离
+
+    float2  baseUVScale;
+
+    float	farPlane;
+
+    float2  terrainRealSize;	//地形的实际大小
+    float   heightScale;		//地形的高度缩放值
+    float   realStartHeight;	//地形的起始高度
+
+    float4  sunColor;    //太阳光颜色
+    float3 ks;
+    float3 kd;
+    float3 ka;
+};
+
+struct PS_OUTPUT
+{
+    float4 Color : COLOR0;       // 像素的颜色 
+};
+
+struct PS_INPUT
+{
+    float4 position : SV_POSITION;
+    float4 posWorld     : TEXCOORD0;    // 水面顶点(世界坐标)
+    float4 color        : COLOR0;       // 水面的颜色
+    float2 texCoords     : TEXCOORD1;    // 水面顶点纹理坐标
+    float4 outTexProj   : TEXCOORD2;    // 水面顶点变换到纹理空间的坐标
+    //float4 normalWorld      : TEXCOORD3;    // 水面顶点的法向
+    float  DepthInView       : TEXCOORD4;    // 水面顶点变换到World View空间之后的深度值
+};
+
+//计算发射的颜色
+float4 CaculateReflectColor(float2 texProj, float2 offsets)
+{
+    float2 realTexProj = float2(1.0 - texProj.x, texProj.y);
+    float2 lastCoords = clamp(realTexProj + offsets, 0.0, 1.0);
+    return texReflectMap.Sample(ReflectMap, lastCoords);
+}
+
+//计算折射的颜色
+float4 CaculateRefractColor(float2 texProj, float2 offsets)
+{
+    float2 lastCoords = clamp(texProj + offsets, 0.0, 1.0);
+    return texRefractMap.Sample(RefractMap, lastCoords);
+}
+
+//根据高度图对水面进行边缘柔化
+float CaculateHeightmapSoftedge(float3 posWorld)
+{
+    float2 height_map_coord;
+    height_map_coord.x = (posWorld.x + terrainRealSize.x/2.0) / terrainRealSize.x;
+    height_map_coord.y = (terrainRealSize.x/2.0 - posWorld.z) / terrainRealSize.x;
+    float3 height_color = texHeightMap.Sample(HeightMap, height_map_coord).xyz;
+    float  vecTerrainHeight = height_color.x;// * 255 * heightScale + realStartHeight;
+    
+    // 水面边缘采用透明处理的最大高度差
+    //float  fMaxWaterHeight = 50.0f;//(input.fPos.y - realStartHeight) * 0.5;
+    
+    // offsetHeight : 水面高度减去对应的地面顶点的高度的差值
+    float  offsetHeight =  posWorld.y - vecTerrainHeight;
+    
+    // 当水面低于对应地形顶点高度时,改像素的透明度为0
+    // 当地形顶点低于水面时, 如果高度差在fMaxWaterHeight之内,采用渐变透明, 超过fMaxWaterHeight就设置为不透明
+    //float  alphaRate = offsetHeight < 0.0 ? 0.0 : saturate( offsetHeight / fMaxWaterHeight );
+    
+    return saturate( offsetHeight / gradient );//alphaRate;
+
+}
+
+//根据深度图对水面进行边缘柔化处理
+float CaculateDepthmapSoftedge(float DepthInView, float2 texProj)
+{
+    // 取得屏幕空间的点所对应的深度值
+    float4 DepthColor = texDepthMap.Sample(DepthMap, texProj);
+    // 空间中的点的深度值
+    float fDepth = -DepthColor.x * farPlane;
+    // 水面顶点的深度值
+    float fPosDepth = DepthInView;
+    // 水面到水底的颜色的渐变参数
+    float foam = 1.0f;
+    // 水面边缘采用透明处理的最大高度差
+    float fMaxWaterHeight = 50.0f;
+    // 计算深度差
+    float offsetDepth = fDepth - fPosDepth;
+    //foam = offsetDepth < 0.0 ? 0.0 : saturate( offsetDepth / fMaxWaterHeight );
+    return saturate( offsetDepth / fMaxWaterHeight );//foam;
+    
+/*
+    if( fDepth > fPosDepth )
+    {
+        // 计算水底颜色的混合参数 
+        // foam的值越小,表面该空间点离水面越近, 水的透明度越高, 同时深水颜色(水底雾化颜色)的影响越小
+        //foam = saturate( (fDepth - fPosDepth) / gradient );
+        foam = saturate( (fDepth - fPosDepth) / 50.0 );
+        return foam;
+    }  
+    return 1;
+*/
+    
+    
+}
+
+
+//计算水面高光
+//float CaculateWaterSpecular(float2 texCoord, float4 dudv_offset, float3 vCamToP)
+float CaculateWaterSpecular(float3 bumpNormal, float3 vCamToP)
+{
+    //float4 dudvn = dudv_offset + texBumpMap.Sample(BumpMap, texCoord);
+    //太阳光的方向
+    float fShine = waterShiness;  
+    float3 vL = normalize( -sunLight.xyz );
+    //水面法向
+    //float3 vN = normalize( dudvn.xyz + float3(0,1,0) );
+    float3 vN = normalize( bumpNormal.xyz + float3(0,1,0) );
+    //计算半角向量
+    float3 vH = normalize( vCamToP - vL );
+    //计算高光
+    float  vSpec = pow( abs( max( dot( vN, vH ), 0 ) ), fShine );
+    return vSpec;
+}
+
+
+//主函数
+PS_OUTPUT PSMain(PS_INPUT input) : SV_TARGET
+{
+    PS_OUTPUT output = (PS_OUTPUT)0;
+    
+    // 归一化水流方向
+    float3 windDir = normalize( float3( flowDirection.x, 0, flowDirection.y ) );    
+    // 获取垂直于水流的方向
+    float3 perpDir = cross(windDir, float3(0,1,0));
+    // 获取经水流方向修正的纹理uv坐标
+    float ydot = dot(input.texCoords, windDir.xz);
+    float xdot = dot(input.texCoords, perpDir.xz);
+    float2 moveVector = float2(xdot, ydot);
+    // 让纹理的v坐标随时间移动
+    moveVector.y += frameTime * flowSpeed;  
+    // 获取最终的凹凸纹理采样坐标
+    float2 bumpMapSamplingPos = moveVector * baseUVScale;
+    
+    // 采样凹凸纹理颜色
+    float4 bumpColor = texBumpMap.Sample(BumpMap, bumpMapSamplingPos);
+    float2 perturbation = distorsion * (bumpColor.rg - 0.5f) * 2.0f;
+
+
+
+
+
+  
+    // 时间变化量
+    //float time = frameTime * flowSpeed;
+    
+    // 水流方向
+    //float2 water_direction = flowDirection * time;
+
+    // 摄像机到顶点的距离
+    //float fCam2Pos = distance(cameraPos, input.powWorld.xyz);    
+
+    // 计算UV
+    //float2 BumpUVCoords = input.texCoords;
+    //BumpUVCoords += water_direction;
+    //float4 dudv_offset = texBumpMap.Sample(BumpMap, BumpUVCoords);
+    //float2 offsets = (2 * dudv_offset.xy - 1) * distorsion;
+
+    // 计算水体基本颜色
+    //float4 WaterColor = texSamp0.Sample(Samp0, BumpUVCoords);
+    //float4 WaterColor = texSamp0.Sample(Samp0, bumpMapSamplingPos);
+    float4 WaterColor = texSamp0.Sample(Samp0, perturbation);
+
+    float2 texProj = input.outTexProj.xy / input.outTexProj.w;
+
+    float3 vCamToP = normalize(cameraPos - input.posWorld.xyz);
+#ifdef HAS_REFLECT
+    // 计算入射角度的余弦值    
+    float cosAngle = dot( vCamToP, float3(0,1,0) );
+    
+    // 入射角的影响因子
+    float angle_factor = saturate(cosAngle / 0.752f);
+    //float4 ReflectColor = CaculateReflectColor(texProj, offsets);
+    float4 ReflectColor = CaculateReflectColor(texProj, perturbation);
+  #ifdef HAS_REFRACT
+  //既有折射又有反射
+    //计算折射颜色
+    //float4 RefractColor = CaculateRefractColor(texProj, offsets);
+    float4 RefractColor = CaculateRefractColor(texProj, perturbation);
+    // 根据菲涅尔参数对折射色和反射色进行混合
+    output.Color = lerp( ReflectColor, RefractColor, angle_factor );
+    // 再与水的纹理颜色进行混合
+    output.Color = lerp( output.Color, WaterColor,   0.01 );
+  #else
+    //只有反射
+    output.Color = lerp( ReflectColor, WaterColor, 0.01 );
+  #endif
+#else
+  #ifdef HAS_REFRACT
+    //float4 RefractColor = CaculateRefractColor(texProj, offsets);
+    float4 RefractColor = CaculateRefractColor(texProj, perturbation);
+    output.Color = lerp( RefractColor, WaterColor, 0.01 );
+  #else
+  #endif
+#endif
+    output.Color *= input.color;
+
+	//处理高光
+    float3 perturbationNormal = distorsion * bumpColor.rgb;
+    float3 waterLightColor = ka * ambientColor.rgb + kd * sunColor.rgb + CaculateWaterSpecular(perturbationNormal.xyz, vCamToP);
+    output.Color.rgb = saturate(waterLightColor * output.Color.rgb);
+
+#ifdef HEIGHTMAP_SOFT_EDGE
+    output.Color.a = CaculateHeightmapSoftedge(input.posWorld.xyz);
+#elif defined(DEPTHMAP_SOFT_EDGE)
+    output.Color.a = CaculateDepthmapSoftedge(input.DepthInView, texProj);
+#endif
+
+    output.Color.rgb = LerpColorWithFog(output.Color.rgb, cameraPos, input.posWorld);
+
+    return output;
+}

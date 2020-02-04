@@ -1,0 +1,121 @@
+#include "VertexDef.hlsl5"
+
+#include "Fog.hlsl5"
+Texture2D texRGB;
+Texture2D tex0;
+Texture2D tex1;
+Texture2D tex2;
+Texture2D tex3;
+
+SamplerState SampRGB;
+SamplerState Samp0;    //A
+SamplerState Samp1;    //R
+SamplerState Samp2;    //G
+SamplerState Samp3;    //B
+
+#include "PSLightPrePass.hlsl5"
+
+#ifdef SHADOWMAP
+float4 CascadeFars;
+#include "PSShadowmapInclude.hlsl5"
+  #ifdef LIGHT_PRE_PASS
+    #define PS_INPUT PS_TerrainLPPWithShadowInput 
+  #else
+    #ifdef CSM
+      #define PS_INPUT PS_TerrainAcceptCSMInput
+    #else
+      #define PS_INPUT PS_TerrainAcceptShadowInput 
+    #endif
+  #endif
+#elif defined(LIGHT_PRE_PASS)
+    #define PS_INPUT PS_TerrainLPPInput 
+#else
+    #define PS_INPUT PS_TerrainInput 
+#endif
+
+
+
+cbuffer cbPerObject
+{
+    float4 ambientColor;
+    float3 ks;
+    float3 kd;
+    float3 ka;
+    float3 cameraPos;
+    float2 uvScales0;
+    float2 uvScales1;
+    float2 uvScales2;
+    float2 uvScales3;
+};
+
+float4 CalculateTerrainColor(float2 uvCoords, float3 fPos)
+{
+    float4 rgbTex = texRGB.Sample(SampRGB, uvCoords);
+    float4 colorSurface = tex0.Sample(Samp0, uvCoords * uvScales0);
+    float4 colorSamp1 = tex1.Sample(Samp1, uvCoords * uvScales1);
+    float4 colorSamp2 = tex2.Sample(Samp2, uvCoords * uvScales2);
+    float4 colorSamp3 = tex3.Sample(Samp3, uvCoords * uvScales3);
+
+    float4 colorLevel = colorSurface * rgbTex.a + colorSamp1 * rgbTex.r + colorSamp2 * rgbTex.g + colorSamp3 * rgbTex.b;    
+
+    return colorLevel;
+}
+
+float2 postProjToScreen(float4 position) 
+{     
+    float2 screenPos = position.xy / position.w;     
+    return (0.5f * (float2(screenPos.x, -screenPos.y) + 1)); 
+}   
+
+
+#ifdef SHADOWMAP
+float4 PSMain(PS_INPUT input) : SV_TARGET
+{
+    float4 output;
+
+    output = CalculateTerrainColor(input.texCoords, input.posWorld);
+
+    float3 zrgb = float3(0.0, 0.0, 1.0);
+#ifdef CSM
+    float shadow = CaculateCascadeShadowmap16(vPos, input.posInLight, ambientColor, input.offset.xy);
+    if (input.offset.z < CascadeFars.x)
+    {
+        zrgb = float3(1.0, 0.0, 0.0);
+    }
+#else
+    float2 vPos = input.position.xy / input.position.w;
+    vPos.x = ( vPos.x + 1.0 ) * 0.5;
+    vPos.y = ( 1.0 - vPos.y ) * 0.5;
+    float shadow = CaculateShadow16(vPos, input.posInLight, ambientColor);
+#endif
+
+#ifdef LIGHT_PRE_PASS
+    float2 scrCoord = postProjToScreen(input.posProj);// - halfPixel;   
+    float4 light = CaculateLight(scrCoord); //tex2D(SamplerLight, scrCoord);   
+
+    output.rgb = saturate((ka * ambientColor.rgb + kd * light.rgb + ks * light.aaa) * output.rgb) * shadow;
+#else
+    output *= input.color * float4(shadow, shadow, shadow, 1);
+#endif
+    output.rgb = LerpColorWithFog(output.rgb, cameraPos, input.posWorld); // * zrgb;
+
+    return output;
+}
+#else
+float4 PSMain(PS_INPUT input) : SV_TARGET
+{
+    float4 Color;
+
+    Color = CalculateTerrainColor(input.texCoords, input.posWorld);
+
+    Color *= input.color;
+#ifdef LIGHT_PRE_PASS
+    float2 scrCoord = postProjToScreen(input.posProj); // - halfPixel;   //uv坐标是要+0.5像素，halfPixel是(-0.5/nWidth, -0.5/nHeight)
+    float4 light = CaculateLight(scrCoord);   
+
+    Color.rgb = saturate((ka * ambientColor.rgb + kd * light.rgb + ks * light.aaa) * Color.rgb);
+#endif
+    Color.rgb = LerpColorWithFog(Color.rgb, cameraPos, input.posWorld);
+    return Color;
+}
+#endif

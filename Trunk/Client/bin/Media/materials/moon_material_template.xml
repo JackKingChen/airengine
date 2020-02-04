@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="gb2312"?>
+
+<Material Name="CloudsTemplate">
+	<Technique Name="Clouds" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+		<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain" VertexDeclaration="E_VB_STANDARD">
+			<RenderStates>
+				<BlendState BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+				<DepthStencilState ZEnable="TRUE" ZWrite="FALSE" StencilEnable="FALSE" ZCompareFunc="eCF_LESS_EQUAL"/>
+				<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+			</RenderStates>
+		</Pass>
+	</Technique>
+	<VertexShader file="Moon.txt"/>
+	<PixelShader file="Moon.txt">
+	</PixelShader>
+</Material>

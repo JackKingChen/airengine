@@ -1,0 +1,82 @@
+cbuffer cbShadowmap
+{
+    float4  JitterScale;
+    float4  FilterSize;
+};
+Texture2D texShadowmap : register(t8);
+Texture3D texJitter : register(t9);
+
+SamplerComparisonState shadowmap : register(s8)
+{
+    Filter = COMPARISON_MIN_MAG_MIP_POINT;
+    AddressU = Border;
+    AddressV = Border;
+    ComparisonFunc = LESS;
+    BorderColor = float4(1.0, 1.0, 1.0, 1.0);
+};
+
+SamplerState jitterTexture : register(s9);
+
+
+float CaculateShadow16(float2 screenPos, float4 posInLight, float4 amColor)
+{
+    float  shadow = 0;
+    
+    float fsize = posInLight.w * FilterSize.w;
+    float4 smcoord = {0, 0, posInLight.zw};
+    float4 jcoord = {screenPos * JitterScale.xy, 0, 0};
+    
+    float4 jitter;
+	
+    // Perform 16 samples
+    /*
+    for (int i = 0; i <= 7; ++i)
+    {
+        jitter = (2 * texJitter.Sample(jitterTexture, jcoord.xyz) - 1.0);
+        jcoord.z += 0.03125f;
+        smcoord.xy = (jitter.xy * fsize + posInLight.xy);
+        smcoord.xyz /= smcoord.w;
+        shadow += texShadowmap.SampleCmp(shadowmap, smcoord.xy, smcoord.z).x;
+        smcoord.xy = (jitter.zw * fsize + posInLight.xy);
+        smcoord.xyz /= smcoord.w;
+        shadow += texShadowmap.SampleCmp(shadowmap, smcoord.xy, smcoord.z).x;
+    }
+	
+    shadow /= 16.0;
+    */
+
+    shadow = texShadowmap.SampleCmp(shadowmap, posInLight.xy / posInLight.w, posInLight.z / posInLight.w).x;
+
+    shadow = saturate(shadow + amColor.x);
+
+    return shadow;
+}
+
+//这种方法只是用于DX9
+float4 CaculateCascadeShadowmap16(float2 vPos, float4 posInLight, float4 amColor, float2 offset)
+{
+    float  shadow = 0;
+    
+    float fsize = posInLight.w * FilterSize.w;
+    float4 smcoord = {0, 0, posInLight.zw};
+    float4 jcoord = {vPos * JitterScale.xy, 0, 0};
+    
+    float4 jitter;
+	
+    // Perform 16 samples
+
+    for (int i = 0; i <= 7; ++i)
+    {
+        jitter = (2 * texJitter.Sample(jitterTexture, jcoord.xyz) - 1.0);
+        jcoord.z += 0.03125f;
+        smcoord.xy = (jitter.xy * fsize + posInLight.xy);
+        shadow += texShadowmap.SampleCmp(shadowmap, smcoord.xy, smcoord.z).x;
+        smcoord.xy = (jitter.zw * fsize + posInLight.xy);
+        shadow += texShadowmap.SampleCmp(shadowmap, smcoord.xy, smcoord.z).x;
+    }
+	
+    shadow /= 16;
+    shadow = saturate(shadow + amColor.x);
+
+    return shadow;
+}

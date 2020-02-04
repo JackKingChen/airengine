@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Materials>
+    <Material Name="01 - Default" TextureCount="1">
+<Technique Name="Default">
+<Pass TextureCount="1">
+        <TextureUnit File="red.jpg" Mipmap="0" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP">
+<TextureStage Stage="0">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>        
+<RenderStates>
+<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_DESTCOLOR" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_DESTALPHA" BlendOptAlpha="BLENDOP_ADD"/>
+<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE"/>
+<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="00000080" FogEnable="TRUE" LightEnable="FALSE"/>
+</RenderStates>
+</Pass>
+</Technique>
+<LightParam DIFFUSE="(1.0,1.0,1.0,1.0)" SPECULAR="(0.0,0.0,0.0,1.0)" EMISSIVE="(0.0,0.0,0.0,1.0)" AMBIENT="(1.0,1.0,1.0,1.0)" SHINESS="255.0"/>
+</Material>
+</Materials>

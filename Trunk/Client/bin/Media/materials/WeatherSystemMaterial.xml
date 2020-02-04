@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Materials ver="1.0">
+    <Material Name="SkyDome" template="skydome_material_template.xml"><!-- template="skydome_material_template.xml"-->
+		<!--
+		<Technique Name="SkydomeLDR">
+			<Pass Name="">
+				<RenderStates>
+				<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSSkyDome"/>
+				<PixelShader Name="PSSkyDomeLDR"/>
+			</Pass>
+		</Technique>
+		<Technique Name="SkydomeHDR">
+			<Pass Name="">
+			<RenderStates>
+			<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+			<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+			<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+			<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+			</RenderStates>
+			<VertexShader Name="VSSkyDome"/>
+			<PixelShader Name="PSSkyDomeHDR"/>
+			</Pass>
+		</Technique>
+		<Technique Name="SkydomeStarfieldLDR">
+			<Pass Name="">
+			<RenderStates>
+			<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+			<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+			<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+			<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+			</RenderStates>
+			<VertexShader Name="VSSkyDome"/>
+			<PixelShader Name="PSSkyDomeStarfieldLDR"/>
+		</Pass>
+		</Technique>
+		<Technique Name="SkydomeStarfieldHDR">
+			<Pass Name="">
+				<RenderStates>
+				<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSSkyDome"/>
+				<PixelShader Name="PSSkyDomeStarfieldHDR"/>
+			</Pass>
+		</Technique>
+		-->
+		<MaterialParams>
+			<!--<var name="texStarfield" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="c22n.png">-->
+			<var name="uLightDir" constantType="CS_FLOAT" VariantType="VAR_FLOAT3" />
+			<var name="uCameraPos" constantType="CS_FLOAT" VariantType="VAR_FLOAT3" />
+			<var name="uInvWaveLength" constantType="CS_FLOAT" VariantType="VAR_FLOAT3" />
+			<var name="uInnerRadius" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uKrESun" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uKmESun" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uKr4PI" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uKm4PI" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uScale" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uScaleDepth" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uScaleOverScaleDepth" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uG" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uG2" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="weatherColor" constantType="CS_FLOAT" VariantType="VAR_FLOAT3" />
+			<var name="weatherMultiplier" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uExposure" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uTime" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uNumberOfSamples" constantType="CS_INT" VariantType="VAR_INT" />
+			<var name="uSamples" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="sampStarfield" constantType="CS_Sampler" VariantType="VAR_TEXTURE"  value="Starfield.png"/>
+		</MaterialParams>
+		<SamplerStateObject name="sampStarfield" file="Starfield.png" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="MoonObject" template="moon_material_template.xml">
+		<!--
+		<Technique Name="MoonObject">
+			<Pass Name="">
+				<RenderStates>
+					<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+					<DepthStencilStateObject ZEnable="TRUE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSMoon"/>
+				<PixelShader Name="PSMoon"/>
+			</Pass>
+		</Technique>
+		-->
+		<MaterialParams>
+			<var name="uMoon" constantType="CS_Sampler" VariantType="VAR_TEXTURE"  value="Moon.png"/>
+		</MaterialParams>
+		<SamplerStateObject name="uMoon" file="Moon.png" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="Cloud" template="clouds_material_template.xml"><!-- template="clouds_material_template.xml"-->
+		<!--
+		<Technique Name="CloudHDR">
+			<Pass Name="">
+			<RenderStates>
+			<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+			<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+			<DepthStencilStateObject ZEnable="FALSE" ZWrite="TRUE" StencilEnable="FALSE"/>
+			<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="FALSE" LightEnable="FALSE"/>
+			</RenderStates>
+			<VertexShader Name="VSCloud"/>
+			<PixelShader Name="PSCloudHDR"/>
+			</Pass>
+		</Technique>
+		-->
+		<MaterialParams>
+			<var name="uExposure" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uSunPosition" constantType="CS_FLOAT" VariantType="VAR_FLOAT3" />
+			<var name="uSunColor" constantType="CS_FLOAT" VariantType="VAR_FLOAT3" />
+			<var name="uHeight" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uTime" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uScale" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uWindDirection" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" />
+			<var name="uCloudLayerHeightVolume" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uCloudLayerVolumetricDisplacement" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uAmbientLuminosity" constantType="CS_FLOAT" VariantType="VAR_FLOAT3" />
+			<var name="uNormalMultiplier" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uDetailAttenuation" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uDistanceAttenuation" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="weatherColor" constantType="CS_FLOAT" VariantType="VAR_FLOAT3" />
+			<var name="weatherMultiplier" constantType="CS_FLOAT" VariantType="VAR_FLOAT" />
+			<var name="uCloud" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="Cloud1.png" />
+			<var name="uNormal" constantType="CS_Sampler" VariantType="VAR_TEXTURE"  value="c22n.png"/>
+			<var name="uDensity" constantType="CS_Sampler" VariantType="VAR_TEXTURE"  value="c22.png"/>
+		</MaterialParams>
+		<SamplerStateObject name="uCloud" file="Cloud1.png" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="uNormal" file="c22n.png" stage="1" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="uDensity" file="c22.png" stage="2" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+</Materials>

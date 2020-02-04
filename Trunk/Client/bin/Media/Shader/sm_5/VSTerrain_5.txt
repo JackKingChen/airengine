@@ -1,0 +1,136 @@
+#include "VertexDef_5.txt"
+#include "clipplane.txt"
+
+struct VS_INPUT
+{
+    float3 position : POSITION;
+    float3 normal: NORMAL;
+    float4 color : COLOR;
+    float2 uvCoords : TEXCOORD;
+};
+
+#ifdef RENDER_TO_GBUFFER
+#define VS_OUTPUT VS_MeshRenderToGBufferOutput
+#else
+
+#ifdef SHADOWMAP
+  #ifdef LIGHT_PRE_PASS
+#define VS_OUTPUT VS_TerrainLPPWithShadowOutput  
+  #else
+    #ifdef CSM
+#define VS_OUTPUT VS_TerrainAcceptCSMOutput
+    #else
+#define VS_OUTPUT VS_TerrainAcceptShadowOutput 
+    #endif
+  #endif
+#else
+  #ifdef LIGHT_PRE_PASS
+#define VS_OUTPUT VS_TerrainLPPOutput 
+  #else
+#define VS_OUTPUT VS_TerrainOutput 
+  #endif
+#endif
+
+#endif
+
+cbuffer cbTerrain
+{
+    matrix wvpMatrix;
+    matrix worldMatrix;
+    matrix WorldViewMatrix;
+#ifdef SHADOWMAP
+    float4 CascadeFars;
+    matrix LightSpaceViewProjMatrix;
+    //matrix LightSpaceProjMatrix;  //在以灯光为视点的投影空间
+    matrix textureProjMatrix;
+    matrix LightSpaceProjMatrixArray[4];
+    float4x4 matViewToLightProj;  // Transform from view space to light projection space
+#endif
+    float3  sunLight;
+    float3  cameraPos;
+    float4  ambientColor;
+    float4  sunColor;    //太阳光颜色
+    float   shininess;
+    float3 ka;
+    float3 kd;
+    float3 ks;
+};
+
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+    VS_OUTPUT output = (VS_OUTPUT)0;
+	
+    output.position = mul(float4(input.position, 1.0), wvpMatrix);
+    
+    output.texCoords = input.uvCoords;
+    
+
+#ifdef RENDER_TO_GBUFFER
+    output.DepthInView = mul(float4(input.position, 1.0), WorldViewMatrix).z; 
+    output.normal = mul(float4(input.normal, 0), WorldViewMatrix);
+#else
+    output.color = input.color;
+    output.posWorld = input.position.xyz;
+#ifdef SHADOWMAP
+  #ifdef CSM
+    //首先计算出z
+    float z = output.position.z / output.position.w;
+    output.offset.z = mul(float4(input.position, 1.0), WorldViewMatrix).z;
+    if (z < CascadeFars.x)   //第一层
+    {
+        output.posInLight = mul(input.position, LightSpaceProjMatrixArray[0]);
+        output.offset.x = 0;
+        output.offset.y = 0;
+    }
+    else
+    {
+        output.posInLight = mul(float4(input.position, 1.0), LightSpaceProjMatrixArray[1]);
+        output.offset.x = 0.5;
+    }
+  #else
+    output.posInLight = mul(float4(input.position, 1.0), LightSpaceViewProjMatrix);//LightSpaceProjMatrix);
+  #endif
+    
+  #ifdef LIGHT_PRE_PASS
+    float4 vNor = float4( input.normal, 0 );
+    output.normal = mul(vNor, worldMatrix).xyz;
+    
+    output.posProj = output.position;
+  #endif
+#else   //没有shadowmap的情况
+  #ifdef LIGHT_PRE_PASS
+    output.posProj = output.position;
+  #else
+  #endif
+#endif
+
+#ifndef LIGHT_PRE_PASS
+    float3 ambient = ka * ambientColor.rgb;
+
+    // Compute the diffuse term
+    float3 N = input.normal;
+	
+    float diffuseLight = max(dot(sunLight, N), 0);
+    float3 diffuse = kd * sunColor.rgb * diffuseLight;
+    //diffuse = clamp(diffuse, ambient, float3(1.0, 1.0, 1.0));
+
+    float3 V = normalize(cameraPos - input.position.xyz);     //眼睛到点的向量
+    float3 H = normalize(sunLight + V);               //用了blinn模型计算光照
+    float specularLight = pow(max(dot(H, N), 0), shininess);
+
+    float3 specular = ks * ambientColor.rgb * specularLight;
+
+    output.color.rgb = saturate(ambient + diffuse + specular);
+    output.color.a = 1.0;
+#endif
+#endif
+
+#ifndef RENDER_TO_GBUFFER
+    output.clip = 1.0;
+    if (nClipEnable > 0)
+    {
+        output.clip = CaculateClipPlane(float4(input.position.xyz, 1.0), worldMatrix);
+    }
+#endif
+    return output;
+}

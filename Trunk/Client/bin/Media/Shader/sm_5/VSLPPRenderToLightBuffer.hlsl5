@@ -1,0 +1,48 @@
+struct VS_PointLightOutput
+{     
+    float4 position   : SV_POSITION;
+    float4 posProj    : TEXCOORD0;
+    float4 ViewPosition:TEXCOORD1;
+};   
+
+struct VS_DirectionLightOutput
+{
+    float4 position	: SV_POSITION;
+    float2 texCoords	: TEXCOORD0;
+    float3 FrustumRay	: TEXCOORD1;
+};
+
+cbuffer cbLPPRenderToLightBuffer
+{
+    matrix wvpMatrix;
+    matrix WorldViewMatrix;
+
+    float3 FrustumCorners[4];
+};
+
+float3 FSQ_GetFrustumRay(in float2 texCoord)
+{
+    float index = texCoord.x + (texCoord.y * 2);
+    return FrustumCorners[index];
+}
+
+VS_PointLightOutput VSPointLight(float4 inPos : POSITION) 
+{     
+    VS_PointLightOutput output = (VS_PointLightOutput)0;         
+    output.position = mul(inPos, wvpMatrix);   
+    output.posProj = output.position;   
+    output.ViewPosition = mul(inPos, WorldViewMatrix); 
+    //output.texCoord = texCoord;   
+    return output; 
+}
+
+VS_DirectionLightOutput VSDirectionLight(in float4 pos : POSITION, in float2 tc : TEXCOORD)
+{
+    VS_DirectionLightOutput output = (VS_DirectionLightOutput)0;
+	
+    output.position = pos; //mul(pos, wvpMatrix);
+    output.texCoords = tc;  // + halfPixel; //这里确认了是不需要半个像素
+    output.FrustumRay = FSQ_GetFrustumRay(tc);
+	
+    return output;
+}

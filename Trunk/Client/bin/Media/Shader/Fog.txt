@@ -1,0 +1,39 @@
+#define FOG_NONE 0
+#define FOG_EXP 1
+#define FOG_EXP2 2
+#define FOG_LINEAR 3
+
+int fogType;
+float fogStart;
+float fogEnd;
+float fogDensity;
+float4 fogColor;
+
+float GetLinearFactor(float dis)
+{
+    return saturate((fogEnd - dis) / (fogEnd - fogStart));
+}
+
+float GetExpFactor(float dis)
+{
+    return 1.0 / exp(dis * fogDensity);
+}
+
+float GetExp2Factor(float dis)
+{
+    return 1.0 / exp2(dis * fogDensity);
+}
+
+//dis 代表摄像机到某点的距离
+float CaculateFogFactor(float dis)
+{
+    return GetLinearFactor(dis);
+}
+
+float3 LerpColorWithFog(float3 color, float3 posCameraWorld, float3 posInWorld)
+{
+    float fCam2World = distance(posCameraWorld, posInWorld);
+    float fFactor = CaculateFogFactor(fCam2World);
+    return lerp(fogColor.rgb, color, fFactor);
+}
+

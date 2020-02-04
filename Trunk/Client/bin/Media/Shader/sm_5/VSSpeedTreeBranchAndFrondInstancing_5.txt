@@ -1,0 +1,116 @@
+#include "SpeedTree_5.txt"
+#include "VertexDef_5.txt"
+#include "Fog_5.txt"
+#include "clipplane.txt"
+
+struct VS_OUTPUT
+{
+    float4 position : SV_POSITION;
+    float4 color : COLOR;
+    float2 uvCoords : TEXCOORD0;
+};
+
+cbuffer cbVSSpeedTreeBranchFrondInstancing
+{
+    matrix ViewProjMatrix;
+    matrix WorldViewMatrix;
+    matrix viewMatrix;
+    matrix worldMatrix;
+    float3 kd;
+    float3  sunLight;
+    float4  sunColor;    //太阳光颜色
+    float4  ambientColor;
+    float3 ka;
+    float3 cameraPos;
+#ifdef SHADOWMAP
+    matrix LightSpaceProjMatrix;  //在以灯光为视点的投影空间
+#endif
+};
+
+#ifdef RENDER_TO_SHADOWMAP
+#define VS_OUTPUT VS_MeshRenderToShadowmapOutput
+#elif defined(RENDER_TO_GBUFFER)
+#define VS_OUTPUT VS_MeshRenderToGBufferOutput
+#else
+  #ifdef SHADOWMAP
+//matrix LightSpaceProjMatrix;  //在以灯光为视点的投影空间
+    #ifdef LIGHT_PRE_PASS   
+#define VS_OUTPUT VS_SpeedTreeLPPWithShadowmapOutput    //既接受shadowmap也接受lightprepass
+    #else  
+#define VS_OUTPUT VS_SpeedTreeAcceptShadowmapOutput  //只接受shadowmap
+    #endif
+  #elif defined(LIGHT_PRE_PASS)  //只接受lightprepass光照
+#define VS_OUTPUT VS_SpeedTreeLPPOutput
+  #else   //什么宏都没定义
+#define VS_OUTPUT VS_SpeedTreeOutput
+  #endif
+#endif
+
+VS_OUTPUT VSMain(VS_FRONDINSTANCING input)
+{
+    VS_OUTPUT output;
+
+    float2 vDiffuseTexCoords = float2(input.uvCoords0.xy);
+    float2 vWindParams = float2(input.uvCoords0.zw);
+
+    input.position.xz = float2(dot(input.vTreeRotationTrig.ywz, input.position.xyz), dot(input.vTreeRotationTrig.xwy, input.position.xyz));
+    input.normal.xz = float2(dot(input.vTreeRotationTrig.ywz, input.normal.xyz), dot(input.vTreeRotationTrig.xwy, input.normal.xyz));
+
+    input.position.xyz *= input.vTreePosition.w;
+
+    float3 position = WindEffectInstancing(input.position.xyz, vWindParams, input.WindMatrixOffset);
+
+    position += input.vTreePosition.xyz;
+    
+    
+    output.position = mul(float4(position, 1.0), ViewProjMatrix);
+    output.texCoords = input.uvCoords0.xy;
+
+#ifdef RENDER_TO_GBUFFER
+    output.DepthInView = mul(float4(position, 1), viewMatrix).z;
+    output.normal = mul(float4(input.normal, 0), viewMatrix);
+#else
+
+#ifdef SHADOWMAP
+    //float4 vNor = float4( input.normal, 0 );
+    //output.normal = mul(vNor, worldMatrix).xyz;
+    output.posInLight = mul(float4(position, 1), LightSpaceProjMatrix);
+    //output.posWorld = position;
+  #ifdef LIGHT_PRE_PASS
+    // 既接收shadowmap也接收lpp
+    output.posProj = output.position;
+    output.color = input.color;
+  #else
+    float3 ambient = ka * ambientColor.rgb;
+    output.color = float4(LightDiffuse(position.xyz, input.normal.xyz, sunLight, sunColor.rgb, kd.rgb) + ambient, 1.0);
+  #endif
+#else
+  #ifdef LIGHT_PRE_PASS
+    output.posProj = output.position;
+    output.color = input.color;
+  #else
+    //什么也没define
+    #ifndef RENDER_TO_SHADOWMAP
+    float3 ambient = ka * ambientColor.rgb;
+    output.color = float4(LightDiffuse(position.xyz, input.normal.xyz, sunLight, sunColor.rgb, kd.rgb) + ambient, 1.0);
+    #endif
+  #endif
+#endif
+    #ifndef RENDER_TO_SHADOWMAP
+    float fCam2World = distance(cameraPos, position.xyz);
+    output.fogFactor = CaculateFogFactor(fCam2World);
+    #endif
+#endif
+
+#ifndef RENDER_TO_SHADOWMAP
+  #ifndef RENDER_TO_GBUFFER
+    output.clip = 1.0;
+    if (nClipEnable > 0)
+    {
+        output.clip = CaculateClipNoMatrix(float4(position.xyz, 1.0));
+    }
+   #endif
+#endif
+   
+    return output;
+};

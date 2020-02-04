@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Scene>
+    <Camera Position="(3293.7783, 1013.2410, 2081.8542)" Lookat="(3368.4836, 862.4647, 1854.5090)" Perspective="TRUE" Near="1.0000" Far="10245.0000" ClipFar="6000.0000"/>
+<Terrain File="terrain.cfg" HeightMap="TestScene.raw" YScale="1" Material="TestScene_terrain_mtl.xml"/>
+<Shadowmap SoftNess="1.000000" DepthBias="0.000000" ScoleScaleBias="2.400000" Type="2"/>
+<Plant Bin="TRUE" File="TestScene.plant"/>
+<Navigator Bin="TRUE" File="TestScene.nav"/>
+<Ambient Color="0.2921 0.2962 0.1941 1.0000"/>
+<Sunlight Direction="-0.0000 -0.2588 -0.9659" Color="1.0000 1.0000 1.0000 1.0000"/>
+<Fog fogMode="3" start="1500.0000" end="8000.0000" density="0.0000" color="0.7529 0.7529 0.7529 1.0000"/>
+<SceneNode Name="MoonObjectNode" Position="(3293.7783 1013.2410 2081.8542)" Rotation="(0.0000 0.0000 0.0000 1.0000)" Scale="(1.0000 1.0000 1.0000)" CullFlag="FLOW_SCENE|FLOW_REFLECTION">
+<Renderable Name="MoonObject" Type="billboard" Resource=""/>
+</SceneNode>
+<SceneNode Name="SceneNode_11137" Position="(4030.5334 -181.2094 310.7412)" Rotation="(0.0000 0.8369 0.0000 0.5473)" Scale="(10.0000 10.0000 10.0000)">
+<Renderable Name="" Type="speedtree" Resource="PagodaTree_MD.spt" InstancingEnable="TRUE" RenderToShadow="TRUE" AcceptShadowmap="TRUE" AcceptDeferredLighting="TRUE"/>
+</SceneNode>
+<SceneNode Name="SceneNode_11541" Position="(4507.0654 -143.9743 -524.0659)" Rotation="(0.0000 0.2123 0.0000 0.9772)" Scale="(10.0000 10.0000 10.0000)">
+<Renderable Name="" Type="speedtree" Resource="PagodaTree_MD.spt" InstancingEnable="TRUE" RenderToShadow="TRUE" AcceptShadowmap="TRUE" AcceptDeferredLighting="TRUE"/>
+</SceneNode>
+<SceneNode Name="SceneNode_14358" Position="(3767.8462 -110.3123 966.5424)" Rotation="(0.0000 -0.4940 0.0000 0.8695)" Scale="(11.5000 11.5000 11.5000)">
+<Renderable Name="" Type="speedtree" Resource="PagodaTree_MD.spt" InstancingEnable="TRUE" RenderToShadow="TRUE" AcceptShadowmap="TRUE" AcceptDeferredLighting="TRUE"/>
+</SceneNode>
+<SceneNode Name="SceneNode_21671" Position="(4018.5728 -103.2696 -1017.3674)" Rotation="(0.0000 0.8134 0.0000 0.5817)" Scale="(11.0000 11.0000 11.0000)">
+<Renderable Name="" Type="speedtree" Resource="PagodaTree_MD.spt" InstancingEnable="TRUE" RenderToShadow="TRUE" AcceptShadowmap="TRUE" AcceptDeferredLighting="TRUE"/>
+</SceneNode>
+<SceneNode Name="SceneNode_25282" Position="(3203.0930 -34.5665 -314.0350)" Rotation="(0.0000 0.0000 0.0000 1.0000)" Scale="(10.0000 10.0000 10.0000)">
+<Renderable Name="" Type="speedtree" Resource="GreenAsh_MD.spt" InstancingEnable="FALSE" RenderToShadow="TRUE" AcceptShadowmap="TRUE" AcceptDeferredLighting="TRUE"/>
+</SceneNode>
+<SceneNode Name="SceneNode_27227" Position="(3596.3608 -89.1547 -250.4107)" Rotation="(0.0000 0.0000 0.0000 1.0000)" Scale="(10.0000 10.0000 10.0000)" CullFlag="FLOW_SCENE|FLOW_REFLECTION|FLOW_RETRACTION|FLOW_SHADOWMAP">
+<Renderable Name="" Type="speedtree" Resource="Bamboo_MD.spt" InstancingEnable="FALSE" RenderToShadow="TRUE" AcceptShadowmap="TRUE" AcceptDeferredLighting="TRUE"/>
+</SceneNode>
+
+<SceneNode Name="SceneNode_Water_0" Position="(7965.5195 -150.0000 -862.2622)" Rotation="(0.0000 0.0000 0.0000 1.0000)" Scale="(1.0000 1.0000 1.0000)" CullFlag="FLOW_SCENE">
+<Renderable Name="" Type="water" GridCountX="1" GridCountZ="1" GridScaleX="5660.198730" GridScaleZ="9163.509766" UScale="10.000000" VScale="10.000000" CenterPos="(7965.519531,-150.000000,-862.262207)" Color="(255,255,255,255)" Distorsion="0.050000" Direction="(-0.173648,0.984808)" FlowSpeed="0.002000" WaterMode="6" FogModeUnderWater="3" FogColorUnderWater="(1.000000,1.000000,1.000000)" FogStartUnderWater="200.000000" FogEndUnderWater="2000.000000" FogDensityUnderWater="1.000000" Shiness="100.000000" Gradient="100.000000"/>
+</SceneNode>
+<SceneNode Name="WeatherSkyDomeNode" Position="(3293.7783 1013.2410 2081.8542)" Rotation="(0.0000 0.0000 0.0000 1.0000)" Scale="(1.0000 1.0000 1.0000)" CullFlag="FLOW_SCENE|FLOW_REFLECTION">
+<Renderable Name="" Type="SkyDome" Resource=""/>
+<Renderable Name="" Type="CloudLayer" Resource=""/>
+</SceneNode>
+<Boundingbox MaxEdge="(13026.5283 10745.9912 12800.0000)" MinEdge="(-12800.0000 -1811.8416 -12800.0000)"/>
+<WeatherManager LightMode="LDR" TimeMultiplier="0.000000">
+<Atmosphere Time="(7.000000,6.000000,18.000000)" EastPosition="(0.000000,1.000000)" InnerRadius="9.775010" OuterRadius="10.296300" HeightPosition="0.010000" RayleighMultiplier="0.002200" MieMultiplier="0.000675" SunIntensity="30.000000" WaveLength="(0.570000,0.540000,0.440000)" G="-0.991000" Exposure="2.000000" NumberOfSamples="0.000000"/>
+<SkyDome Circles="41" Steps="40" SmoothFading="TRUE" FadingPercent="0.100000"/>
+<MoonObject Size="0.225000" RelDist="0.800000"/>
+<CloudsManager>
+<CloudLayer Height="100.000000" Scale="0.001000" WindDirection="(1.000000,1.000000)" TimeMultiplier="0.125000" DistanceAttenuation="0.050000" DetailAttenuation="1.000000" NormalMultiplier="2.000000" HeightVolume="0.250000" VolumetricDisplacement="0.010000"/>
+</CloudsManager>
+</WeatherManager>
+</Scene>

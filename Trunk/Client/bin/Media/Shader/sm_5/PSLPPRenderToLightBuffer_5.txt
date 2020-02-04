@@ -1,0 +1,106 @@
+Texture2D texDepth;
+SamplerState samplerDepth;
+Texture2D texNormal;
+SamplerState samplerNormal;
+
+cbuffer cbLPPRenderToLightBuffer
+{
+float3 LightPositionInView;
+float4 lightDiffuse;
+float  shininess;
+float  LightRadius;
+
+matrix InvViewProjMatrix;  
+float3 CameraPosInView;     //摄像机在view空间的坐标
+float  farPlane;        //摄像机的farplane
+float2 halfPixel;
+
+float4 sunColor;
+float3 sunLight;    //这里的方向也应该是在view空间里
+float3 cameraPos;   //注意，这里是view空间的坐标
+};
+
+struct PS_PointLightInput
+{     
+    float4 position	: SV_POSITION;
+    float4 posProj    : TEXCOORD0; 
+    float4 ViewPosition:TEXCOORD1; 
+};
+
+struct PS_DirectionLightInput
+{
+    float4 position	: SV_POSITION;
+    float2 texCoords	: TEXCOORD0;    //已经减去半个像素了
+    float3 FrustumRay	: TEXCOORD1;
+};
+
+float2 postProjToScreen(float4 position) 
+{     
+    float2 screenPos = position.xy / position.w;     
+    return (0.5f * (float2(screenPos.x, -screenPos.y) + 1)); 
+}   
+
+
+float4 PSMainPointLight(PS_PointLightInput input) : SV_TARGET0
+{
+    //float2 screenPos = postProjToScreen(input.posProj); 
+    // DX9 half pixel offset 
+    float2 texCoord = postProjToScreen(input.posProj) - halfPixel;
+    float depth = texDepth.Sample(samplerDepth, texCoord).x;
+
+    // Reconstruct position from screen space + depth
+    float3 frustumRayVS = input.ViewPosition.xyz * (farPlane / -input.ViewPosition.z); 
+    float3 positionVS = frustumRayVS * depth;    //像素在view空间中的坐标
+
+
+    // Restore Normal 
+    float4 normal = texNormal.Sample(samplerNormal, texCoord); 
+    normal.xyz = normalize(2.0f * normal.xyz - 1.0f);
+
+    // Attenuation Calcs 
+    float3 lDir = LightPositionInView - positionVS; 
+    float atten = saturate(1.0f - length(lDir) / LightRadius);
+    //saturate(1 - dot(lDir/Attenuation, lDir/Attenuation)); 
+    lDir = normalize(lDir);   
+    // N.L 
+    float nl = max(dot(normal.xyz, lDir), 0) * atten;
+
+    //float3 lightVectorVS = LightPositionInView - position;
+    //float3 halfDir = normalize(lDir + camDir); 
+    float spec = pow(saturate(dot(normal.xyz, lDir)), normal.a * 255.0);
+
+    //测试用
+    //float outX = input.ScreenPosition.x / input.ScreenPosition.w;
+    //float outY = input.ScreenPosition.y / input.ScreenPosition.w;
+    return float4(lightDiffuse.rgb * nl, spec); //float4(outX, outY, nl, spec); 
+}
+
+float4 PSMainDirectionLight(PS_DirectionLightInput input) : SV_TARGET0
+{
+    float2 texCoords = input.texCoords;
+
+    //Sample normal and specular power from buffer.
+    float4 normalAndSpecularPower = texNormal.Sample(samplerNormal, texCoords);
+
+    //Remap normal from [0..1] to [-1..1]
+    float3 N = 2.0f * normalAndSpecularPower.xyz - 1.0f;
+      
+    //Reconstruct view space surface position from depth map using the frustum ray.
+    float4 positionVS = float4(texDepth.Sample(samplerDepth, texCoords).r * input.FrustumRay, 1.0f);
+        
+    //Surface to light vector
+    float3 L = normalize(sunLight);   //不需要变成负数，因为传进去的时候已经取反了
+
+    //Calculate diffuse lighting
+    float NdotL = max(0, dot(N, L));
+    float3 diffuse = NdotL * sunColor.rgb;
+
+    //Calculate specular lighting
+    //float3 R = normalize(reflect(-L, N));
+    float3 V = normalize(cameraPos - positionVS.xyz);
+    float3 h = normalize(L + V);
+    float specular = pow( saturate(dot(N, h)), normalAndSpecularPower.a * 255.0);
+
+    return float4(NdotL, NdotL, NdotL, specular); //float4(diffuse, specular);
+    
+}

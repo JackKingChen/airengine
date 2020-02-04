@@ -1,0 +1,32 @@
+#include "VertexDef.txt"
+struct VS_INPUT
+{
+	float4 position : 	POSITION;
+	vector color : 		COLOR;
+};
+
+struct PS_INPUT
+{
+    float4 color : COLOR;
+};
+
+#define VS_OUTPUT VS_SceneDebugOutput
+
+matrix  wvpMatrix;
+
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+    VS_OUTPUT output;
+
+    output.position = mul(input.position, wvpMatrix);
+    output.color = input.color;
+   
+    return output;
+};
+
+float4 PSMain( PS_INPUT input ) : COLOR
+{
+    return input.color;
+}
+
+

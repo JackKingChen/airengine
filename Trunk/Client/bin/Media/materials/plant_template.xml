@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Material Name="plant">
+	<Technique Name="default" Flow="FLOW_SCENE|FLOW_REFLECTION|FLOW_RETRACTION" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+		<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain" VertexDeclaration="E_VB_NORMAL">
+			<RenderStates>
+				<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+				<DepthStencilState ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE" ZCompareFunc="eCF_LESS_EQUAL"/>
+				<FixedPipeState AlphaTestEnable="TRUE" AlphaRef="80" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+			</RenderStates>
+		</Pass>
+	</Technique>
+	<VertexShader file="VSPlant.txt"/>
+	<PixelShader file="PSMesh.txt">
+	<MaterialParams>
+		<var name="samplerMesh" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		<var name="alphaTest" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="0.2" />
+	</MaterialParams>
+</Material>
+</Materials>

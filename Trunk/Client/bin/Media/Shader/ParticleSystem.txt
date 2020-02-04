@@ -1,0 +1,30 @@
+#include "VertexDef.txt"
+
+sampler SampParticleSystem;
+matrix wvpMatrix;
+
+#define PS_INPUT PS_MeshInput
+
+struct VS_ParticleSystemOutput
+{
+    float4 position	: POSITION;
+    float4 color : COLOR0;
+    float2 texCoords	: TEXCOORD0;
+};
+
+VS_ParticleSystemOutput VSMain(in float4 pos : POSITION, in float4 color : COLOR, in float2 tc : TEXCOORD)
+{
+    VS_ParticleSystemOutput output = (VS_ParticleSystemOutput)0;
+	
+    output.position = mul(pos, wvpMatrix);
+    output.texCoords = tc;
+    output.color = color;
+	
+    return output;
+}
+
+float4 PSMain( PS_INPUT input ) : COLOR
+{
+    float4 texCol = tex2D(SampParticleSystem, input.texCoords) * input.color;
+    return texCol;
+}

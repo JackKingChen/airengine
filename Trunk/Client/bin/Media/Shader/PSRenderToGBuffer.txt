@@ -1,0 +1,31 @@
+struct PS_OUTPUT
+{
+    float4 Depth : COLOR0;
+    float4 Normals : COLOR1;
+};
+
+sampler sampMesh;  //meshµÄÎÆÀí
+
+float shininess;
+float farPlane;
+
+struct PS_INPUT
+{
+    //float4 Position   : POSITION; 
+    float  DepthInView  : TEXCOORD0; 
+    float4 normal     : TEXCOORD1; 
+    float2 texCoords : TEXCOORD2;
+};
+
+PS_OUTPUT PSMain(PS_INPUT input)
+{
+    float4 texColor = tex2D(sampMesh, input.texCoords);
+    clip(texColor.a - 0.5);
+    PS_OUTPUT output = (PS_OUTPUT)0;       
+    output.Depth = float4(-input.DepthInView / farPlane, 1.0f, 1.0f, 1.0f);//input.Depth.x;     
+    output.Normals.rgb = 0.5f * (normalize(input.normal.xyz) + 1.0f);       
+    // Set alpha for both Depth and Normals to 1 (for some reason its required)     
+    //output.Depth.a = 1.0f;     
+    output.Normals.a = shininess / 255;
+    return output; 
+}

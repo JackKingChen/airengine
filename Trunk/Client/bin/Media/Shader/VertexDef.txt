@@ -1,0 +1,225 @@
+struct VS_MeshInput
+{
+    float4 position : POSITION;
+    float3 normal: NORMAL;
+    float4 color : COLOR;
+    float2 uvCoords : TEXCOORD;
+};
+
+struct VS_SkinMeshInput
+{
+    float4 position     : POSITION;
+    float3 normal       : NORMAL;
+    float4 color        : COLOR;
+    float2 uvCoords    : TEXCOORD0;
+    float4 Weights      : TEXCOORD1;//BLENDWEIGHT;
+    float4 Indices      : TEXCOORD2;//BLENDINDICES;
+};
+
+struct VS_InstancingInput
+{
+    float4 position : POSITION;
+    float3 normal: NORMAL;
+    float4 color : COLOR;
+    float2 uvCoords : TEXCOORD0;
+    float4 row1 : TEXCOORD1;
+    float4 row2 : TEXCOORD2;
+    float4 row3 : TEXCOORD3;
+    float4 row4 : TEXCOORD4;
+    float4 instanceColor : COLOR1;
+};
+
+struct VS_MeshOutput
+{
+    float4 position : POSITION;
+    float4 color      : COLOR0;
+    float2 texCoords     : TEXCOORD0;
+};
+
+struct VS_MeshRenderToShadowmapOutput
+{
+    float4 position : POSITION;
+    float2 texCoords : TEXCOORD0;
+};
+
+struct PS_MeshInput
+{
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+};
+
+struct PS_MeshRenderToShadowmapInput
+{
+    float2 texCoords : TEXCOORD0;
+};
+
+struct VS_MeshRenderToGBufferOutput
+{
+    float4 position   : POSITION; 
+    float  DepthInView      : TEXCOORD0; 
+    float4 normal     : TEXCOORD1; 
+    float2 texCoords : TEXCOORD2;
+};
+
+struct PS_MeshRenderToGBufferInput
+{
+    float  DepthInView      : TEXCOORD0; 
+    float4 normal     : TEXCOORD1; 
+    float2 texCoords : TEXCOORD2;
+};
+
+struct VS_MeshAcceptShadowOutput
+{
+    float4 position : POSITION;     //在视觉空间的位置
+    float4 color : COLOR0;
+    float3 posWorld : TEXCOORD0;
+    float2 texCoords : TEXCOORD1;
+    //float3 normal : TEXCOORD2;
+    float4 posInLight : TEXCOORD2;   //顶点在以light为摄像机的投影空间的位置
+};
+
+struct PS_MeshAcceptShadowInput
+{
+    float4 color : COLOR0;
+    float3 posWorld : TEXCOORD0;
+    float2 texCoords : TEXCOORD1;
+    //float3 normal : TEXCOORD2;
+    float4 posInLight : TEXCOORD2;   //顶点在以light为摄像机的投影空间的位置
+};
+
+struct VS_MeshLPPOutput   //light pre pass顶点输出
+{
+    float4 position : POSITION;
+    //float3 normal : TEXCOORD0;
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    float4 posProj : TEXCOORD1;
+};
+
+struct PS_MeshLPPInput   //light pre pass顶点输出
+{
+    //float3 normal : TEXCOORD0;
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    float4 posProj : TEXCOORD1;
+};
+
+struct VS_MeshLPPWithShadowOutput
+{
+    float4 position : POSITION;
+    //float3 normal : TEXCOORD0;
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    float3 posWorld : TEXCOORD1;
+    float4 posInLight : TEXCOORD2;   //顶点在以light为摄像机的投影空间的位置
+    float4 posProj : TEXCOORD3;
+};
+
+struct PS_MeshLPPWithShadowInput
+{
+    //float3 normal : TEXCOORD0;
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    float3 posWorld : TEXCOORD1;
+    float4 posInLight : TEXCOORD2;   //顶点在以light为摄像机的投影空间的位置
+    float4 posProj : TEXCOORD3;
+};
+
+struct VS_TerrainOutput
+{
+    float4 position : POSITION;
+    float4 color : COLOR;
+    float3 posWorld : TEXCOORD0;
+    float2 texCoords : TEXCOORD1;
+};
+
+struct PS_TerrainInput
+{
+    float4 color : COLOR;
+    float3 posWorld : TEXCOORD0;
+    float2 texCoords : TEXCOORD1;
+};
+
+struct VS_TerrainAcceptShadowOutput
+{
+    float4 position : POSITION;
+    float4 color : COLOR;
+    float3 posWorld : TEXCOORD0;
+    float2 texCoords : TEXCOORD1;
+    float3 normal : TEXCOORD2;
+    float4 posInLight : TEXCOORD3;   //顶点在以light为摄像机的投影空间的位置
+};
+
+struct PS_TerrainAcceptShadowInput
+{
+    float4 color : COLOR;
+    float3 posWorld : TEXCOORD0;
+    float2 texCoords : TEXCOORD1;
+    float3 normal : TEXCOORD2;
+    float4 posInLight : TEXCOORD3;   //顶点在以light为摄像机的投影空间的位置
+};
+
+struct VS_TerrainLPPOutput
+{
+    float4 position : POSITION;
+    float4 color : COLOR;
+    float3 posWorld : TEXCOORD0;
+    float2 texCoords : TEXCOORD1;
+    float4 posProj : TEXCOORD2;
+};
+
+struct PS_TerrainLPPInput
+{
+    float4 color : COLOR;
+    float3 posWorld : TEXCOORD0;
+    float2 texCoords : TEXCOORD1;
+    float4 posProj : TEXCOORD2;
+};
+
+struct VS_TerrainLPPWithShadowOutput
+{
+    float4 position : POSITION;
+    float4 color : COLOR;
+    float3 posWorld : TEXCOORD0;
+    float2 texCoords : TEXCOORD1;
+    float3 normal : TEXCOORD2;
+    float4 posInLight : TEXCOORD3;   //顶点在以light为摄像机的投影空间的位置
+    float4 posProj : TEXCOORD4;
+};
+
+struct PS_TerrainLPPWithShadowInput
+{
+    float4 color : COLOR;
+    float3 posWorld : TEXCOORD0;
+    float2 texCoords : TEXCOORD1;
+    float3 normal : TEXCOORD2;
+    float4 posInLight : TEXCOORD3;   //顶点在以light为摄像机的投影空间的位置
+    float4 posProj : TEXCOORD4;
+};
+
+struct VS_TerrainAcceptCSMOutput
+{
+    float4 position : POSITION;
+    float4 color : COLOR;
+    float3 posWorld : TEXCOORD0;     
+    float2 texCoords : TEXCOORD1;
+    float3 normal : TEXCOORD2;
+    float4 posInLight : TEXCOORD3;   //顶点在以light为摄像机的投影空间的位置
+    float3 offset : TEXCOORD4;       //z是深度
+};
+
+struct PS_TerrainAcceptCSMInput
+{
+    float4 color : COLOR;
+    float3 posWorld : TEXCOORD0;     //w是projection深度
+    float2 texCoords : TEXCOORD1;
+    float3 normal : TEXCOORD2;
+    float4 posInLight : TEXCOORD3;   //顶点在以light为摄像机的投影空间的位置
+    float3 offset : TEXCOORD4;
+};
+
+struct VS_SceneDebugOutput
+{
+    float4 position : POSITION;
+    float4 color      : COLOR0;
+};

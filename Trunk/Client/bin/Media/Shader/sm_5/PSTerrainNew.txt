@@ -1,0 +1,135 @@
+#include "Fog.hlsl5"
+Texture2D texRGB;
+Texture2D tex0;
+Texture2D tex1;
+Texture2D tex2;
+Texture2D tex3;
+
+SamplerState SampRGB;
+SamplerState Samp0;    //A
+SamplerState Samp1;    //R
+SamplerState Samp2;    //G
+SamplerState Samp3;    //B
+
+#include "PSLightPrePass.hlsl5"
+#include "PSShadowmapInclude.hlsl5"
+
+
+struct PS_INPUT
+{
+    float4 position : SV_POSITION;
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    float3 posWorld : TEXCOORD1;
+    float4 posInLight : TEXCOORD2;   //顶点在以light为摄像机的投影空间的位置
+    float clip : SV_ClipDistance0;
+};
+
+cbuffer cbPerObject
+{
+    float2 uvScales[5];
+    float4 ambientColor;
+    //float2 halfPixel;
+    float3 ks;
+    float3 kd;
+    float3 ka;
+    float3 cameraPos;
+};
+
+float4 CalculateTerrainColor(float2 uvCoords, float3 fPos)
+{
+    float4 rgbTex = texRGB.Sample(SampRGB, uvCoords);
+    float4 colorSurface = tex0.Sample(Samp0, uvCoords * uvScales[1]);
+    float4 colorSamp1 = tex1.Sample(Samp1, uvCoords * uvScales[2]);
+    float4 colorSamp2 = tex2.Sample(Samp2, uvCoords * uvScales[3]);
+    float4 colorSamp3 = tex3.Sample(Samp3, uvCoords * uvScales[4]);
+
+    float4 colorLevel = colorSurface * rgbTex.a + colorSamp1 * rgbTex.r + colorSamp2 * rgbTex.g + colorSamp3 * rgbTex.b;    
+
+    return colorLevel;
+}
+
+float2 postProjToScreen(float4 position) 
+{     
+    float2 screenPos = position.xy / position.w;     
+    return (0.5f * (float2(screenPos.x, -screenPos.y) + 1)); 
+}   
+
+interface iTerrainPS
+{
+    float4 GetTerrainColor(PS_INPUT input);
+};
+
+class TerrainNormalPS : iTerrainPS
+{
+    float a;
+    float4 GetTerrainColor(PS_INPUT input)
+    {
+        float4 Color;
+
+        Color = CalculateTerrainColor(input.texCoords, input.posWorld);
+
+        Color *= input.color;
+
+        Color.rgb = LerpColorWithFog(Color.rgb, cameraPos, input.posWorld);
+        return Color;
+    }
+};
+
+class TerrainAcceptShadowmapPS : iTerrainPS
+{
+    float a;
+    float4 GetTerrainColor(PS_INPUT input)
+    {
+        float4 output;
+
+        output = CalculateTerrainColor(input.texCoords, input.posWorld);
+
+        float2 vPos = input.position.xy / input.position.w;
+        vPos.x = ( vPos.x + 1.0 ) * 0.5;
+        vPos.y = ( 1.0 - vPos.y ) * 0.5;
+        float shadow = CaculateShadow16(vPos, input.posInLight, ambientColor);
+
+        output *= input.color * float4(shadow, shadow, shadow, 1);
+
+        output.rgb = LerpColorWithFog(output.rgb, cameraPos, input.posWorld); // * zrgb;
+
+        return output;
+    }
+};
+
+class TerrainDeferredShadingNoShadowPS : iTerrainPS
+{
+    float a;
+    float4 GetTerrainColor(PS_INPUT input)
+    {
+        float4 output;
+
+        output = CalculateTerrainColor(input.texCoords, input.posWorld);
+
+        float2 vPos = input.position.xy / input.position.w;
+        vPos.x = ( vPos.x + 1.0 ) * 0.5;
+        vPos.y = ( 1.0 - vPos.y ) * 0.5;
+        float shadow = CaculateShadow16(vPos, input.posInLight, ambientColor);
+
+        output *= input.color * float4(shadow, shadow, shadow, 1);
+
+        output.rgb = LerpColorWithFog(output.rgb, cameraPos, input.posWorld); // * zrgb;
+
+        return output;
+    }
+};
+
+cbuffer cbTerrainClass
+{
+    TerrainNormalPS g_TerrainNormal;
+    TerrainAcceptShadowmapPS g_TerrainAcceptShadowmap;
+    TerrainDeferredShadingNoShadowPS g_TerrainDeferredShadingNoShadow;
+};
+
+iTerrainPS g_TerrainPS = g_TerrainNormal;
+
+float4 PSMain(PS_INPUT input) : SV_TARGET
+{
+    return g_TerrainPS.GetTerrainColor(input);
+}

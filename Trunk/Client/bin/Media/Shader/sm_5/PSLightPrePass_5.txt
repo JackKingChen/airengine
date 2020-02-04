@@ -1,0 +1,7 @@
+Texture2D texLight : register(t10);
+SamplerState SamplerLight : register(s10);
+
+float4 CaculateLight(float2 srcCoord)
+{
+    return texLight.Sample(SamplerLight, srcCoord);
+}

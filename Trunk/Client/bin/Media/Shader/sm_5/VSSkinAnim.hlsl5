@@ -1,0 +1,150 @@
+#include "VertexDef.hlsl5"
+#include "clipplane.hlsl5"
+
+cbuffer cbSkinMesh
+{
+    float4x3  boneMatrix[50];
+    matrix ViewProjMatrix;
+    matrix worldMatrix;
+    matrix wvpMatrix;
+    matrix WorldViewMatrix;
+#ifdef RENDER_TO_GBUFFER
+    matrix viewMatrix;
+    
+#endif
+
+#ifdef SHADOWMAP
+    //matrix LightSpaceProjMatrix;  //在以灯光为视点的投影空间
+    matrix LightSpaceViewProjMatrix;
+#endif
+    float3  sunLight;
+    float3  cameraPos;
+    float4  ambientColor;
+    float4  sunColor;    //太阳光颜色
+    float   shininess;
+    float3 ka;
+    float3 kd;
+    float3 ks;
+};
+
+#ifdef HARDWARE_SKIN
+#define VS_INPUT VS_SkinMeshInput 
+#else
+#define VS_INPUT VS_MeshInput 
+#endif
+
+#ifdef RENDER_TO_SHADOWMAP
+#define VS_OUTPUT VS_MeshRenderToShadowmapOutput
+#elif defined(RENDER_TO_GBUFFER)
+#define VS_OUTPUT VS_MeshRenderToGBufferOutput
+#else
+  #ifdef SHADOWMAP
+    #ifdef LIGHT_PRE_PASS   
+#define VS_OUTPUT VS_MeshLPPWithShadowOutput    //既接受shadowmap也接受lightprepass
+    #else  
+#define VS_OUTPUT VS_MeshAcceptShadowOutput  //只接受shadowmap
+    #endif
+  #elif defined(LIGHT_PRE_PASS)  //只接受lightprepass光照
+#define VS_OUTPUT VS_MeshLPPOutput
+  #else   //什么宏都没定义
+#define VS_OUTPUT VS_MeshOutput
+  #endif
+#endif
+
+
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+    VS_OUTPUT   output = (VS_OUTPUT)0;
+
+#ifdef HARDWARE_SKIN
+    float i;
+    float4 inPos = float4(input.position.xyz, 1.0);
+    float3 tempPos;
+
+    tempPos  = mul( inPos, boneMatrix[input.Indices.x] ) * input.Weights.x;
+    tempPos += mul( inPos, boneMatrix[input.Indices.y] ) * input.Weights.y;
+    tempPos += mul( inPos, boneMatrix[input.Indices.z] ) * input.Weights.z;
+    tempPos += mul( inPos, boneMatrix[input.Indices.w] ) * input.Weights.w;
+    
+    float4 finalPos;
+    finalPos.xyz = tempPos;
+    finalPos.w = 1.0;
+    float4 worldPos = mul(finalPos, worldMatrix);
+    output.position = mul(finalPos, wvpMatrix);
+#else
+    float4 finalPos = float4(input.position.xyz, 1.0);
+    float4 worldPos = mul(float4(input.position.xyz, 1.0), worldMatrix);
+    output.position = mul(float4(input.position.xyz, 1.0), wvpMatrix);
+#endif
+
+#if defined(RENDER_TO_GBUFFER)
+    float4 vNor = float4( input.normal, 0 );
+    //float4 finalNormal;
+    tempPos  = mul( vNor, boneMatrix[input.Indices.x] ) * input.Weights.x;
+    tempPos += mul( vNor, boneMatrix[input.Indices.y] ) * input.Weights.y;
+    tempPos += mul( vNor, boneMatrix[input.Indices.z] ) * input.Weights.z;
+    tempPos += mul( vNor, boneMatrix[input.Indices.w] ) * input.Weights.w;
+    output.normal = mul(float4(tempPos, 0), WorldViewMatrix);
+    output.DepthInView = mul(finalPos, WorldViewMatrix).z; 
+#else
+  #ifdef SHADOWMAP
+    output.posWorld = worldPos.xyz;
+    output.posInLight = mul(/*input.position*/float4(output.posWorld, 1.0), LightSpaceViewProjMatrix);//LightSpaceProjMatrix);   //这里会有问题
+    #ifdef LIGHT_PRE_PASS
+    // 既接收shadowmap也接收lpp
+    output.posProj = output.position;
+    #endif
+  #elif defined(LIGHT_PRE_PASS)
+    output.posProj = output.position;
+  #endif
+
+  #ifndef RENDER_TO_SHADOWMAP
+    // 计算颜色值
+    #ifndef LIGHT_PRE_PASS
+    float3 ambient = ka * ambientColor.rgb;
+
+    float4 vNor = float4( input.normal, 0 );
+#ifdef HARDWARE_SKIN
+    tempPos  = mul( vNor, boneMatrix[input.Indices.x] ) * input.Weights.x;
+    tempPos += mul( vNor, boneMatrix[input.Indices.y] ) * input.Weights.y;
+    tempPos += mul( vNor, boneMatrix[input.Indices.z] ) * input.Weights.z;
+    tempPos += mul( vNor, boneMatrix[input.Indices.w] ) * input.Weights.w;
+    float3 N = normalize(mul( float4(tempPos, 0), worldMatrix ));
+#else
+    float3 N = normalize(mul( float4(input.normal, 0), worldMatrix ));
+#endif
+    float diffuseLight = max(dot(sunLight, N), 0);
+    float3 diffuse = kd * sunColor.rgb * diffuseLight;
+    //diffuse = clamp(diffuse, ambient, float3(1.0, 1.0, 1.0));
+
+    float3 V = normalize(cameraPos - worldPos.xyz);     //眼睛到点的向量
+    float3 H = normalize(sunLight + V);               //用了blinn模型计算光照
+    float specularLight = pow(max(dot(H, N), 0), shininess);
+
+    float3 specular = ks * ambientColor.rgb * specularLight;
+
+    output.color.rgb = saturate(ambient + diffuse + specular);
+    output.color.a = 1.0;
+    #else
+    output.color = input.color;
+    #endif
+    
+    #ifndef RENDER_TO_GBUFFER
+    output.clip = 1.0;
+    if (nClipEnable > 0)
+    {
+        output.clip = CaculateClipNoMatrix(finalPos); //CaculateClipPlane(float4(input.position.xyz, 1.0), worldMatrix);
+    }
+    #endif
+  #endif
+#endif
+
+    // 计算纹理坐标值
+    output.texCoords = input.uvCoords.xy;
+    
+    return output;
+}
+
+
+
+

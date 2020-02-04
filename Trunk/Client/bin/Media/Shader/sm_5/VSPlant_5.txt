@@ -1,0 +1,69 @@
+#include "VertexDef_5.txt"
+#include "clipplane.txt"
+struct VS_INPUT
+{
+	float4 position : 	POSITION;
+	float3 normal: 		NORMAL;
+	float4 color : 		COLOR;
+	float2 uvCoords : 	TEXCOORD0;
+};
+
+
+#ifdef RENDER_TO_GBUFFER
+#define VS_OUTPUT VS_MeshRenderToGBufferOutput
+#else
+#ifdef LIGHT_PRE_PASS
+#define VS_OUTPUT VS_MeshLPPOutput
+#else
+  #define VS_OUTPUT VS_MeshOutput
+#endif
+#endif
+
+cbuffer cbPlant
+{
+    matrix  worldMatrix;
+    matrix  wvpMatrix;
+    float4	offset;	
+    float3  cameraPos;      // ÉãÏñ»úÎ»ÖÃ
+    float 	frameTime;
+    matrix  WorldViewMatrix;
+};
+
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+    VS_OUTPUT output;
+
+    float4 mypos 	= input.position;
+    float4 factor 	= float4(1,1,1,1) - input.uvCoords.yyyy;	
+	
+    float4 wpos 	= mul(input.position, worldMatrix);
+    float dist      = distance( float3(0,0,0), wpos.xyz );
+    float distFactor = sin(dist + frameTime);    
+	
+    mypos = mypos + offset * distFactor * factor;
+
+    output.position = mul(mypos, wvpMatrix);
+    output.texCoords = input.uvCoords;
+#ifdef RENDER_TO_GBUFFER
+    output.DepthInView = mul(input.position, WorldViewMatrix).z; 
+    output.normal = mul(float4(input.normal, 0), WorldViewMatrix);
+#else
+  #ifdef LIGHT_PRE_PASS
+    output.posProj = output.position;
+  #endif
+    output.color = input.color;
+#endif	
+
+#ifndef RENDER_TO_SHADOWMAP
+  #ifndef RENDER_TO_GBUFFER
+    output.clip = 1.0;
+    if (nClipEnable > 0)
+    {
+        output.clip = CaculateClipPlane(float4(input.position.xyz, 1.0), worldMatrix);
+    }
+   #endif
+#endif
+   
+    return output;
+};
+

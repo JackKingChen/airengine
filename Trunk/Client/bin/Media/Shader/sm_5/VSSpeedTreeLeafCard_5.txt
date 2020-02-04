@@ -1,0 +1,77 @@
+#include "SpeedTree_5.txt"
+#include "VertexDef_5.txt"
+#include "Fog_5.txt"
+#include "clipplane.txt"
+
+#ifdef RENDER_TO_SHADOWMAP
+#define VS_OUTPUT VS_MeshRenderToShadowmapOutput
+#elif defined(RENDER_TO_GBUFFER)
+#define VS_OUTPUT VS_MeshRenderToGBufferOutput
+#else
+  #ifdef LIGHT_PRE_PASS
+    #define VS_OUTPUT VS_SpeedTreeLPPOutput
+  #else
+    #define VS_OUTPUT VS_SpeedTreeOutput
+  #endif
+#endif
+
+cbuffer cbVSSpeedtreeLeafCard
+{
+    matrix viewMatrix;
+    matrix ViewProjMatrix;
+    float3 cameraPos; 
+
+    float3 kd;
+    float3  sunLight;
+    float4  sunColor;    //Ì«Ñô¹âÑÕÉ«
+    float4  ambientColor;
+    float3 ka;
+    float3 cameraRight;
+    float3 cameraUp;
+};
+
+
+VS_OUTPUT VSMain(VS_LEAFCARD input)
+{
+    VS_OUTPUT output;
+
+
+    float fDimming = input.uvCoords2.w;           // interior leaves are darker (range = [0.0,1.0])
+    float3 position = CaculateLeafCardPosition(input);
+    output.position = mul(float4(position, 1.0), ViewProjMatrix);
+    output.texCoords = input.uvCoords0.xy;
+
+#ifdef RENDER_TO_GBUFFER
+    output.DepthInView = mul(float4(position, 1), viewMatrix).z;
+    output.normal = mul(float4(input.normal, 0), viewMatrix);
+#else
+  #ifdef LIGHT_PRE_PASS
+    output.posProj = output.position;
+    float3 ambient = ka * ambientColor.rgb;
+    output.color.rgb = fDimming * LightDiffuse(position.xyz, input.normal.xyz, sunLight, sunColor.rgb, kd.rgb) + ambient;
+    output.color.a = 1.0;
+  #else
+    #ifndef RENDER_TO_SHADOWMAP
+    float3 ambient = ka * ambientColor.rgb;
+    output.color.rgb = fDimming * LightDiffuse(position.xyz, input.normal.xyz, sunLight, sunColor.rgb, kd.rgb) + ambient;
+    output.color.a = 1.0;
+    #endif
+  #endif
+    #ifndef RENDER_TO_SHADOWMAP
+    float fCam2World = distance(cameraPos, position.xyz);
+    output.fogFactor = CaculateFogFactor(fCam2World);
+    #endif
+#endif
+
+#ifndef RENDER_TO_SHADOWMAP
+  #ifndef RENDER_TO_GBUFFER
+    output.clip = 1.0;
+    if (nClipEnable > 0)
+    {
+        output.clip = CaculateClipNoMatrix(float4(position.xyz, 1.0));
+    }
+   #endif
+#endif
+    
+    return output;
+};

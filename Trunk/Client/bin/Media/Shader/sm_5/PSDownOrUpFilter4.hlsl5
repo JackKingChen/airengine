@@ -1,0 +1,37 @@
+Texture2D texColor;
+SamplerState srcColor;  
+
+cbuffer cbFilter
+{
+    float2 TexCoordsDownFilter[16];
+};
+
+struct PS_INPUT
+{
+	float4 position : SV_POSITION;
+	float2 tex0:TEXCOORD;
+};
+
+struct PS_OUTPUT
+{
+	float4 color:COLOR;
+};
+
+
+PS_OUTPUT PSDownFilter4(PS_INPUT input ) : SV_TARGET
+{
+	PS_OUTPUT output = (PS_OUTPUT)0; 
+	for(int i = 0 ; i < 16 ; i++)
+	{
+		output.color += texColor.Sample(srcColor, input.tex0.xy + TexCoordsDownFilter[i].xy) ;
+	}
+	output.color /= 16; 
+	return output;
+}
+
+PS_OUTPUT PSUpFilter4(PS_INPUT input ) : SV_TARGET
+{
+	PS_OUTPUT output = (PS_OUTPUT)0; 
+	output.color = texColor.Sample(srcColor, input.tex0.xy);
+	return output;
+}

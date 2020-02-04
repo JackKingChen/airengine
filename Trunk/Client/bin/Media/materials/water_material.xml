@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Materials ver="1.0">
+    <Material Name="WaterEffect" template="water_material_template.xml"> <!--template="water_material_template.xml"-->
+		<!--
+		<Technique Name="WaterNoReflectNoRefractNoSoftEdge">
+			<Pass Name="">
+				<TextureUnit File="water.jpg" Mipmap="0">
+				<TextureStage Stage="0">
+				<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				</TextureStage>
+				<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				</TextureUnit>
+				<TextureUnit File="wavesbump.dds" Mipmap="0">
+				<TextureStage Stage="1">
+				<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				</TextureStage>
+				<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				</TextureUnit>
+				<RenderStates>
+				<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSWater"/>
+				<PixelShader Name="PSWater"/>
+			</Pass>
+		</Technique>
+		<Technique Name="WaterHasReflectNoRefractNoSoftEdge">
+			<Pass Name="">
+				<TextureUnit File="water.jpg" Mipmap="0">
+				<TextureStage Stage="0">
+				<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				</TextureStage>
+				<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				</TextureUnit>
+				<RenderStates>
+				<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSWater"/>
+				<PixelShader Name="PSWaterHasRefract"/>
+			</Pass>
+		</Technique>
+		<Technique Name="WaterNoReflectHasRefractNoSoftEdge">
+			<Pass Name="">
+				<TextureUnit File="water.jpg" Mipmap="0">
+				<TextureStage Stage="0">
+				<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				</TextureStage>
+				<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				</TextureUnit>
+				<RenderStates>
+				<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSWater"/>
+				<PixelShader Name="PSWaterHasRefract"/>
+			</Pass>
+		</Technique>
+		<Technique Name="WaterHasReflectHasRefractNoSoftEdge">
+			<Pass Name="">
+				<TextureUnit File="water.jpg" Mipmap="0" TextureTransform="TRUE" TextureScale="(5.000000,5.000000,5.000000)">
+				<TextureStage Stage="0">
+				<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				</TextureStage>
+				<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				</TextureUnit>
+				<RenderStates>
+				<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSWater"/>
+				<PixelShader Name="PSWaterHasReflectHasRefract"/>
+			</Pass>
+		</Technique>
+		<Technique Name="WaterNoReflectHasRefractWithHightMapSoftEdge">
+			<Pass Name="">
+				<TextureUnit File="water.jpg" Mipmap="0" TextureTransform="TRUE" TextureScale="(5.000000,5.000000,5.000000)">
+				<TextureStage Stage="0">
+				<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				</TextureStage>
+				<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				</TextureUnit>
+				<RenderStates>
+				<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSWater"/>
+				<PixelShader Name="PSWaterHasRefractHasHeightmapSoftEdge"/>
+			</Pass>
+		</Technique>
+		<Technique Name="WaterHasReflectNoRefractWithHightMapSoftEdge">
+			<Pass Name="">
+				<TextureUnit File="water.jpg" Mipmap="0" TextureTransform="TRUE" TextureScale="(5.000000,5.000000,5.000000)">
+				<TextureStage Stage="0">
+				<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				</TextureStage>
+				<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				</TextureUnit>
+				<RenderStates>
+				<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSWater"/>
+				<PixelShader Name="PSWaterHasReflectHasHeightmapSoftEdge"/>
+			</Pass>
+		</Technique>
+		<Technique Name="WaterHasReflectHasRefractWithHightMapSoftEdge">
+			<Pass Name="">
+				<TextureUnit File="water.jpg" Mipmap="0" TextureTransform="TRUE" TextureScale="(5.000000,5.000000,5.000000)">
+				<TextureStage Stage="0">
+				<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				</TextureStage>
+				<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				</TextureUnit>
+				<RenderStates>
+				<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSWater"/>
+				<PixelShader Name="PSWaterHasReflectHasRefractHasHeightmapSoftEdge"/>
+			</Pass>
+		</Technique>
+		<Technique Name="WaterHasReflectHasRefractWithDepthMapSoftEdge">
+			<Pass Name="">
+				<TextureUnit File="water.jpg" Mipmap="0" TextureTransform="TRUE" TextureScale="(5.000000,5.000000,5.000000)">
+				<TextureStage Stage="0">
+				<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				</TextureStage>
+				<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				</TextureUnit>
+				<RenderStates>
+				<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_INVSRCALPHA" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader Name="VSWater"/>
+				<PixelShader Name="PSWaterHasReflectHasRefractHasDepthmapSoftEdge"/>
+			</Pass>
+		</Technique>
+		<LightParam DIFFUSE="(1.000000,1.000000,1.000000,1.000000)" SPECULAR="(0.000000,0.000000,0.000000,1.000000)" EMISSIVE="(0.000000,0.000000,0.000000,1.000000)" AMBIENT="(1.000000,1.000000,1.000000,1.000000)" SHINESS="255.0000"/>
+		-->
+		<MaterialParams>
+			<var name="distorsion" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="0.050000"/>
+			<var name="flowDirection" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(-0.173648,0.984808)"/>
+			<var name="flowSpeed" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="0.002000"/>
+			<var name="gradient" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="100.000000"/>
+			<var name="waterShiness" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="100.000000"/>
+			<var name="baseUVScale" constantType="CS_FLOAT" VariantType="VAR_FLOAT2" value="(10.000000,10.000000)"/>
+			<var name="Samp0" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="water.jpg" />
+			<var name="ReflectMap" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="RefractMap" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="BumpMap" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="wavesbump.dds" />
+			<!--
+			<var name="HeightMap" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="DepthMap" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			-->
+		</MaterialParams>
+		<SamplerStateObject name="Samp0" file="water.jpg" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<!--
+		<SamplerStateObject name="ReflectMap" file="" stage="1" Filter="TEXF_LINEAR" AddressU="TADDRESS_CLAMP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="RefractMap" file="" stage="2" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="BumpMap" file="wavesbump.dds" stage="3" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="HeightMap" file="" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		-->
+	</Material>
+</Materials>

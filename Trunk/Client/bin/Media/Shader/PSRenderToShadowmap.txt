@@ -1,0 +1,18 @@
+struct VS_INPUT
+{
+    float2 uvCoords : TEXCOORD0;
+};
+
+sampler Samp0;
+//float4  ambientColor; 
+//sampler shadowmap;
+
+float4 PSMain(VS_INPUT input) : COLOR
+{
+    float4 color = tex2D(Samp0, input.uvCoords);
+    clip(color.a - 0.1);
+    //float4 color = float4(input.Depth.x, input.Depth.x, input.Depth.x, 1);//input.Depth.x / input.Depth.y;
+    //color.x = ambientColor.r;
+    //color.yzw = 1.0;
+    return color;
+}

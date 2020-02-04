@@ -1,0 +1,6 @@
+sampler SamplerLight : register(s10);
+
+float4 CaculateLight(float2 srcCoord)
+{
+    return tex2D(SamplerLight, srcCoord);
+}

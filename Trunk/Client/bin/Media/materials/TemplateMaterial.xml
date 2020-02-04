@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Materials ver="1.0">
+  <Material Name="Particle" template="particle_system_template.xml"> <!-- template="particle_system_template.xml"-->
+	<!--
+    <Technique Name="Default">
+      <Pass Name="">
+        <TextureUnit File="particle.dds" Mipmap="0">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="FALSE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="80" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+		<VertexShader Name="VSParticleSystem"/>
+		<PixelShader Name="PSParticleSystem"/>
+      </Pass>
+    </Technique>
+	-->
+	<MaterialParams>
+		<var name="SampParticleSystem" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+	</MaterialParams>
+	<SamplerStateObject name="SampParticleSystem" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+  </Material>
+
+  <Material Name="RibbonTrail" template="particle_system_template.xml">
+	<!--
+    <Technique Name="Default">
+      <Pass Name="">
+        <TextureUnit File="" Mipmap="0">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="FALSE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+		<VertexShader Name="VSParticleSystem"/>
+		<PixelShader Name="PSParticleSystem"/>
+      </Pass>
+    </Technique>
+	-->
+	<MaterialParams>
+		<var name="SampParticleSystem" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+	</MaterialParams>
+	<SamplerStateObject name="SampParticleSystem" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+  </Material>
+
+  <Material Name="Terrain">
+    <Technique Name="Default">
+      <Pass Name="">
+        <RenderStates>
+          <BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+        <VertexShader Name="VSTerrain"/>
+        <PixelShader Name="PSTerrain"/>
+      </Pass>
+    </Technique>
+  </Material>
+  
+  <Material Name="Plant" template="plant_template.xml">
+	<!--
+    <Technique Name="WaveUsingVS">
+      <Pass Name="">
+        <TextureUnit File="particle.dds" Mipmap="0">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="TRUE" AlphaRef="80" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+        <VertexShader Name="VSPlant"/>
+		<PixelShader Name="PSMesh"/>
+      </Pass>
+    </Technique>
+    <Technique Name="WaveNotUseVS">
+      <Pass Name="">
+        <TextureUnit File="particle.dds" Mipmap="0">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+          </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="TRUE" AlphaRef="80" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+      </Pass>
+    </Technique>
+	-->
+	<MaterialParams>
+		<var name="offset" constantType="CS_FLOAT" VariantType="VAR_FLOAT4" />
+		<var name="samplerMesh" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		<var name="alphaTest" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="0.2" />
+	</MaterialParams>
+	<SamplerStateObject name="samplerMesh" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</Material>
+  
+  <Material Name="ScreenCompositor">
+    <Technique Name="Default">
+      <Pass Name="">
+        <TextureUnit File="" Mipmap="1">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_DISABLE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_POINT" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+      </Pass>
+    </Technique>
+  </Material>
+  
+  <Material Name="NavMesh">
+    <Technique Name="Default">
+      <Pass Name="">
+        <TextureUnit File="" Mipmap="1">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_DISABLE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+          <DepthStencilStateObject ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+      </Pass>
+    </Technique>
+  </Material>
+  
+  <Material Name="RenderToDepthMap">
+    <Technique Name="Default">
+      <Pass Name="">
+        <TextureUnit File="" Mipmap="1">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_DISABLE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_POINT" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+      <VertexShader Name="VSRenderToDepthmap"/>
+      <PixelShader Name="PSRenderToDepthmap"/>
+      </Pass>
+    </Technique>
+  </Material>
+  
+  <Material Name="LightPrePass">
+    <Technique Name="ClearGBuffer">
+      <Pass Name="">
+        <TextureUnit File="" Mipmap="1">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_DISABLE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_POINT" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+      <VertexShader Name="VSClearDepthAndNormals"/>
+      <PixelShader Name="PSClearDepthAndNormals"/>
+      </Pass>
+    </Technique>    
+    <Technique Name="LPPPointLightRenderToLightBuffer">
+      <Pass Name="">
+        <TextureUnit File="" Mipmap="1">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+          </TextureStage>
+        <SamplerStateObject Filter="TEXF_POINT" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <TextureUnit File="" Mipmap="1">
+          <TextureStage Stage="1">
+            <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+          </TextureStage>
+        <SamplerStateObject Filter="TEXF_POINT" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+          <DepthStencilStateObject ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+        <VertexShader Name="VSPointLightRenderToLightBuffer"/>
+        <PixelShader Name="PSPointLightRenderToLightBuffer"/>
+      </Pass>
+    </Technique>
+    <Technique Name="LightPrePassDirectionalLightRenderToLightBuffer">
+    <Pass Name="">
+    <TextureUnit File="" Mipmap="1">
+    <TextureStage Stage="0">
+    <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+    <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+    </TextureStage>
+    <SamplerStateObject Filter="TEXF_POINT" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+    </TextureUnit>
+    <TextureUnit File="" Mipmap="1">
+    <TextureStage Stage="1">
+    <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+    <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+    </TextureStage>
+    <SamplerStateObject Filter="TEXF_POINT" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+    </TextureUnit>
+    <RenderStates>
+    <BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+    <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+    <DepthStencilStateObject ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+    <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+    </RenderStates>
+    <VertexShader Name="VSDirectionLightRenderToLightBuffer"/>
+    <PixelShader Name="PSDirectionLightRenderToLightBuffer"/>
+    </Pass>
+    </Technique>
+    <Technique Name="HardwareInstancingRenderToGBuffer">
+    <Pass Name="">
+    <TextureUnit File="" Mipmap="1">
+    <TextureStage Stage="0">
+    <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+    <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+    </TextureStage>
+    <SamplerStateObject Filter="TEXF_POINT" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+    </TextureUnit>
+    <RenderStates>
+    <BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+    <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+    <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+    <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+    </RenderStates>
+    <VertexShader Name="VSInstancingRenderToGBuffer"/>
+    <PixelShader Name="PSLPPRenderToGBuffer"/>
+    </Pass>
+    </Technique>
+  </Material>
+  
+  <Material Name="2DMap">
+	  <Technique Name="Default">
+		<Pass Name="">
+			<TextureUnit File="" Mipmap="1">
+				<TextureStage Stage="0">
+					<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+					<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				</TextureStage>
+				<SamplerStateObject Filter="TEXF_POINT" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+			</TextureUnit>
+			<RenderStates>
+				<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+			</RenderStates>
+		</Pass>
+	  </Technique>
+  </Material>
+  
+  <Material Name="2DObject">
+	  <Technique Name="Default">
+		  <Pass Name="">
+			  <TextureUnit File="" Mipmap="1">
+				  <TextureStage Stage="0">
+					<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+					<TextureBlendAlpha TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				  </TextureStage>
+				  <SamplerStateObject Filter="TEXF_NONE" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+			  </TextureUnit>
+			  <RenderStates>
+				<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+				<DepthStencilStateObject ZEnable="TRUE" ZWrite="FALSE" StencilEnable="FALSE"/>
+				<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+			  </RenderStates>
+		  </Pass>
+	  </Technique>
+  </Material>
+  
+  <Material Name="LineObject">
+    <Technique Name="Default">
+      <Pass Name="">
+        <TextureUnit File="" Mipmap="1">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_DISABLE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_POINT" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+		<VertexShader Name="VSLineObject"/>
+		<PixelShader Name="PSLineObject"/>
+      </Pass>
+    </Technique>
+  </Material>
+  
+	<Material Name="SpeedTreeBranch" template="speedtree_branch_template.xml">
+		<!--
+		<Technique Name="Default">
+			  <Pass Name="">
+				  <TextureUnit File="" Mipmap="0">
+				  <TextureStage Stage="0">
+				  <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				  <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				  </TextureStage>
+				  <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				  </TextureUnit>
+				  <RenderStates>
+				  <BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				  <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+				  <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				  <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				  </RenderStates>
+			  </Pass>
+		  </Technique>
+		  -->
+		<MaterialParams>
+			<var name="samplerMesh" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		</MaterialParams>
+		<SamplerStateObject name="samplerMesh" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	
+	<Material Name="SpeedTreeLeafcard" template="speedtree_leafcard_template.xml">
+		<!--
+		<Technique Name="Default">
+			  <Pass Name="">
+				  <TextureUnit File="" Mipmap="0">
+				  <TextureStage Stage="0">
+				  <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+				  <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+				  </TextureStage>
+				  <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				  </TextureUnit>
+				  <RenderStates>
+				  <BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+				  <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+				  <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+				  <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				  </RenderStates>
+			  </Pass>
+		  </Technique>
+		  -->
+		<MaterialParams>
+			<var name="samplerMesh" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		</MaterialParams>
+		<SamplerStateObject name="samplerMesh" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+  
+  <Material Name="LensFlare">
+  <Technique Name="Default">
+  <Pass Name="">
+  <TextureUnit File="LensFlare.tga" Mipmap="0">
+  <TextureStage Stage="0">
+  <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+  <TextureBlendAlpha TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+  </TextureStage>
+  <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+  </TextureUnit>
+  <RenderStates>
+  <BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_SRCALPHA" DstBlend="BLEND_ONE" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+  <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+  <DepthStencilStateObject ZEnable="FALSE" ZWrite="TRUE" StencilEnable="FALSE"/>
+  <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+  </RenderStates>
+  </Pass>
+  </Technique>
+  </Material>
+
+  <Material Name="SceneDbgCommonWithDepth" template="scenedebug_material_template.xml">
+	<!--
+    <Technique Name="Default">
+      <Pass Name="0">
+      	<TextureUnit File="" Mipmap="1">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_DISABLE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates> 
+        <VertexShader Name="VSSceneDbgCommon"/>
+        <PixelShader Name="PSSceneDbg"/>
+      </Pass>
+    </Technique>
+	-->
+  </Material>
+  
+  <Material Name="SceneDbgScreenWithDepth" template="scenedebug_material_template.xml">
+	<!--
+    <Technique Name="Default">
+      <Pass Name="0">
+      	<TextureUnit File="" Mipmap="1">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_DISABLE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates> 
+        <VertexShader Name="VSSceneDbgScreen"/>
+        <PixelShader Name="PSSceneDbg"/>
+      </Pass>
+    </Technique>
+	-->
+  </Material>
+
+  <Material Name="SceneDbgCommonWithoutDepth" template="scenedebug_material_template.xml">
+	<!--
+    <Technique Name="Default">
+      <Pass Name="0">
+      	<TextureUnit File="" Mipmap="1">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_DISABLE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+          <DepthStencilStateObject ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates> 
+        <VertexShader Name="VSSceneDbgCommon"/>
+        <PixelShader Name="PSSceneDbg"/>
+      </Pass>
+    </Technique>
+	-->
+  </Material>
+  
+    <Material Name="SceneDbgScreenWithoutDepth" template="scenedebug_material_template.xml">
+	<!--
+    <Technique Name="Default">
+      <Pass Name="0">
+      	<TextureUnit File="" Mipmap="1">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_DISABLE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_NONE"/>
+          <DepthStencilStateObject ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates> 
+        <VertexShader Name="VSSceneDbgScreen"/>
+        <PixelShader Name="PSSceneDbg"/>
+      </Pass>
+    </Technique>
+	-->
+  </Material>
+  
+  <Material Name="UI" template="ui_template.xml"> <!-- template="particle_system_template.xml"-->
+	<!--
+    <Technique Name="Default">
+      <Pass Name="">
+        <TextureUnit File="particle.dds" Mipmap="0">
+          <TextureStage Stage="0">
+            <TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+            <TextureBlendAlpha TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+          </TextureStage>
+          <SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+        </TextureUnit>
+        <RenderStates>
+          <BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+          <RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+          <DepthStencilStateObject ZEnable="TRUE" ZWrite="FALSE" StencilEnable="FALSE"/>
+          <FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="80" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+        </RenderStates>
+		<VertexShader Name="VSParticleSystem"/>
+		<PixelShader Name="PSParticleSystem"/>
+      </Pass>
+    </Technique>
+	-->
+	<MaterialParams>
+		<var name="SampUI" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		<var name="UseTex" constantType="CS_INT" VariantType="VAR_INT" />
+	</MaterialParams>
+	<SamplerStateObject name="SampUI" stage="0" Filter="TEXF_POINT" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+  </Material>
+</Materials>

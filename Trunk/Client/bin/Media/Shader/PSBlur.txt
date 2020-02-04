@@ -1,0 +1,65 @@
+sampler2D srcColor;
+float bloomScale = 1.2f;
+/*static const int g_cKernelSize = 12;
+
+float2 TexelKernelH[g_cKernelSize] ;
+
+float2 TexelKernelV[g_cKernelSize] ;
+
+static const float BlurWeights[g_cKernelSize] = 
+{
+    0.002216,
+    0.008764,
+    0.026995,
+    0.064759,
+    0.120985,
+    0.176033,
+    0.199471,
+    0.176033,
+    0.120985,
+    0.064759,
+    0.026995,
+    0.008764,
+    0.002216,
+};
+*/
+
+//改为循环7次 以提高效率
+static const int g_cKernelSize = 7;
+
+float2 TexelKernel[g_cKernelSize] ;
+
+float BlurWeights[g_cKernelSize] ;
+ 
+struct PS_INPUT
+{
+	float4 tex0:TEXCOORD0;
+};
+
+struct PS_OUTPUT
+{
+	float4 color:COLOR;
+};
+
+//普通的横向模糊
+PS_OUTPUT PSBlur(PS_INPUT input)
+{
+	PS_OUTPUT output = (PS_OUTPUT)0;
+	for(int i = 0 ; i < g_cKernelSize; i++)
+	{
+		output.color += tex2D( srcColor, input.tex0.xy + TexelKernel[i].xy ) * BlurWeights[i];
+	}
+	return output;
+}
+
+//模糊处理横向比普通的处理增加了亮度
+PS_OUTPUT PSBloomBlur(PS_INPUT input)
+{
+	PS_OUTPUT output = (PS_OUTPUT)0;
+	for(int i = 0 ; i < g_cKernelSize; i++)
+	{
+		output.color += tex2D( srcColor, input.tex0.xy + TexelKernel[i].xy ) * BlurWeights[i];
+	}
+	output.color *= bloomScale;
+	return output;
+}

@@ -1,0 +1,11 @@
+attribute mediump vec4 inPosition;
+attribute mediump vec4 inColor;
+
+uniform mat4  wvpMatrix;
+varying mediump vec4  Color;
+
+void main()
+{
+    gl_Position = wvpMatrix * inPosition;
+    Color = inColor;
+}

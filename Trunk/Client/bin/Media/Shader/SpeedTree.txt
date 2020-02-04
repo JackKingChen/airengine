@@ -1,0 +1,297 @@
+#include "Mathlib.txt"
+
+float fWindMatrixOffset;
+float4x4    g_amWindMatrices[6];
+float2 cameraAngle;
+float4 leafAngles[8];
+float4 vTreeRotationTrig;
+float4 vTreePosition;
+float4 vLeafAngleScalars;
+
+float3 WindMatrixLerp(float3 vCoord, int nIndex, float fWeight)
+{
+//#ifdef SPEEDTREE_OPENGL
+    //vCoord = lerp(vCoord, mul(vCoord, float3x3(g_amWindMatrices[nIndex])), fWeight);
+//#else
+    return lerp(vCoord, mul(float4(vCoord, 0.0), g_amWindMatrices[nIndex]).xyz, fWeight);
+//#endif
+}
+
+float3 WindEffect(float3 vPosition, float2 vWindInfo)
+{
+    // extract the wind indices & weights:
+    //   vWeights.x = [0.0, 0.98] wind weight for wind matrix 1
+    //   vWeights.y = [0.0, 0.98] wind weight for wind matrix 2
+    //   vIndices.x = integer index for wind matrix 1
+    //   vIndices.y = integer index for wind matrix 2
+    float2 vWeights = frac(vWindInfo.xy);
+    float2 vIndices = vWindInfo.xy - vWeights;
+
+    // this one instruction helps keep two instances of the same base tree from being in
+    // sync in their wind behavior; each instance has a unique matrix offset
+    // (g_fWindMatrixOffset.x) which helps keep them from using the same set of
+    // matrices for wind
+    vIndices = fmod(vIndices + fWindMatrixOffset.xx, 6);
+
+    // first-level wind effect - interpolate between static position and fully-blown
+    // wind position by the wind weight value
+    float3 posLerp = WindMatrixLerp(vPosition, int(vIndices.x), vWeights.x);
+
+    // second-level wind effect - interpolate between first-level wind position and
+    // the fully-blown wind position by the second wind weight value
+#ifdef SPEEDTREE_TWO_WEIGHT_WIND
+    return WindMatrixLerp(posLerp, int(vIndices.y), vWeights.y);
+#endif
+    return posLerp;
+}
+
+float3 WindEffectInstancing(float3 vPosition, float2 vWindInfo, float windMatrixOffset)
+{
+    // extract the wind indices & weights:
+    //   vWeights.x = [0.0, 0.98] wind weight for wind matrix 1
+    //   vWeights.y = [0.0, 0.98] wind weight for wind matrix 2
+    //   vIndices.x = integer index for wind matrix 1
+    //   vIndices.y = integer index for wind matrix 2
+    float2 vWeights = frac(vWindInfo.xy);
+    float2 vIndices = vWindInfo.xy - vWeights;
+
+    // this one instruction helps keep two instances of the same base tree from being in
+    // sync in their wind behavior; each instance has a unique matrix offset
+    // (g_fWindMatrixOffset.x) which helps keep them from using the same set of
+    // matrices for wind
+    vIndices = fmod(vIndices + windMatrixOffset.xx, 6);
+
+    // first-level wind effect - interpolate between static position and fully-blown
+    // wind position by the wind weight value
+    return WindMatrixLerp(vPosition, int(vIndices.x), vWeights.x);
+
+    // second-level wind effect - interpolate between first-level wind position and
+    // the fully-blown wind position by the second wind weight value
+#ifdef SPEEDTREE_TWO_WEIGHT_WIND
+    WindMatrixLerp(vPosition, int(vIndices.y), vWeights.y);
+#endif
+}
+
+float3 LightDiffuse(float3 vVertex,
+                    float3 vNormal,
+                    float3 vLightDir,
+                    float3 vLightColor,
+                    float3 vDiffuseMaterial)
+{
+    return vDiffuseMaterial * vLightColor * max(dot(vNormal, vLightDir), 0.0f);
+}
+
+struct VS_FROND
+{
+    float3 position : 	POSITION; 
+    float3 normal: 	NORMAL;
+    vector color : 	COLOR;
+    float4 uvCoords0 : 	TEXCOORD0;  //xy = diffuse map uv, zw = wind parameters
+};
+
+struct VS_LEAFCARD
+{
+    float4 position : 	POSITION;   //w - corner index
+    float3 normal: 	NORMAL;
+    vector color : 	COLOR;
+    float4 uvCoords0 : 	TEXCOORD0;  //xy = diffuse map uv, zw = wind parameters
+    float4 uvCoords1 : 	TEXCOORD1;  // .x = width, .y = height, .z = pivot x, .w = pivot.y
+    float4 uvCoords2 :  TEXCOORD2;  // .x = angle.x, .y = angle.y, .z = wind angle index, .w = dimming
+};
+
+struct VS_FRONDINSTANCING
+{
+    float3 position : 	POSITION;   //w - corner index
+    float3 normal: 	NORMAL;
+    vector color : 	COLOR;
+    float4 uvCoords0 : 	TEXCOORD0;  //xy = diffuse map uv, zw = wind parameters
+    float4 vTreeRotationTrig : TEXCOORD1;    //rotation
+    float4 vTreePosition : TEXCOORD2;        //xyz = position, w = scale
+    float  WindMatrixOffset : TEXCOORD3;
+};
+
+struct VS_LEAFCARDINSTANCING
+{
+    float4 position : 	POSITION;   //w - corner index
+    float3 normal: 	NORMAL;
+    vector color : 	COLOR;
+    float4 uvCoords0 : 	TEXCOORD0;  //xy = diffuse map uv, zw = wind parameters
+    float4 uvCoords1 : 	TEXCOORD1;  // .x = width, .y = height, .z = pivot x, .w = pivot.y
+    float4 uvCoords2 :  TEXCOORD2;  // .x = angle.x, .y = angle.y, .z = wind angle index, .w = dimming
+    float4 vTreeRotationTrig : TEXCOORD3;    //rotation
+    float4 vTreePosition : TEXCOORD4;        //xyz = position, w = scale
+    float  WindMatrixOffset : TEXCOORD5;     //windmatrixoffset
+};
+
+struct VS_SpeedTreeOutput
+{
+    float4 position : POSITION;
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    float  fogFactor : TEXCOORD1;
+};
+
+struct PS_SpeedTreeInput
+{
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    float  fogFactor : TEXCOORD1;
+};
+
+struct VS_SpeedTreeAcceptShadowmapOutput
+{
+    float4 position : POSITION;     //在视觉空间的位置
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    //float3 normal : TEXCOORD1;
+    float4 posInLight : TEXCOORD1;   //顶点在以light为摄像机的投影空间的位置
+    float  fogFactor : TEXCOORD2;
+};
+
+struct PS_SpeedTreeAcceptShadowmapInput
+{
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    float4 posInLight : TEXCOORD1;   //顶点在以light为摄像机的投影空间的位置
+    float  fogFactor : TEXCOORD2;
+};
+
+struct VS_SpeedTreeLPPOutput
+{
+    float4 position : POSITION;
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    float4 posProj : TEXCOORD1;
+    float  fogFactor : TEXCOORD2;
+};
+
+struct PS_SpeedTreeLPPInput
+{
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    float4 posProj : TEXCOORD1;
+    float  fogFactor : TEXCOORD2;
+};
+
+struct VS_SpeedTreeLPPWithShadowmapOutput
+{
+    float4 position : POSITION;
+    //float3 normal : TEXCOORD0;
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    //float3 posWorld : TEXCOORD2;
+    float4 posInLight : TEXCOORD1;   //顶点在以light为摄像机的投影空间的位置
+    float4 posProj : TEXCOORD2;
+    float  fogFactor : TEXCOORD3;
+};
+
+struct PS_SpeedTreeLPPWithShadowmapInput
+{
+    float4 color : COLOR0;
+    float2 texCoords : TEXCOORD0;
+    float4 posInLight : TEXCOORD1;   //顶点在以light为摄像机的投影空间的位置
+    float4 posProj : TEXCOORD2;
+    float  fogFactor : TEXCOORD3;
+};
+
+float4 g_mLeafUnitSquare[4] = // unit leaf card that's turned towards the camera
+    {                            // vertex shader.  card is aligned on xy plane
+    //float4(0.5f, 0.5f, 0.0f, 0.0f), 
+    //float4(-0.5f, 0.5f, 0.0f, 0.0f), 
+    //float4(-0.5f, -0.5f, 0.0f, 0.0f), 
+    //float4(0.5f, -0.5f, 0.0f, 0.0f)
+    float4(0.0f, 0.5f, 0.5f, 0.0f),
+    float4(0.0f, -0.5f, 0.5f, 0.0f),
+    float4(0.0f, -0.5f, -0.5f, 0.0f),
+    float4(0.0f, 0.5f, -0.5f, 0.0f)
+    };
+
+
+float3 CaculateLeafCardPosition(inout VS_LEAFCARD input)
+{
+    float fAzimuth = cameraAngle.x;      // camera azimuth for billboarding
+    float fPitch = cameraAngle.y;        // camera pitch for billboarding
+    float2 vSize = input.uvCoords1.xy;            // leaf card width & height
+    int nCorner = input.position.w;               // which card corner this vertex represents [0,3]
+    float fRotAngleX = input.uvCoords2.x;         // angle offset for leaf rocking (helps make it distinct)
+    float fRotAngleY = input.uvCoords2.y;         // angle offset for leaf rustling (helps make it distinct)
+    float fWindAngleIndex = input.uvCoords2.z;    // which wind matrix this leaf card will follow
+    float2 vPivotPoint = input.uvCoords1.zw;      // point about which card will rock and rustle
+    
+    float2 vWindParams = input.uvCoords0.zw;      // wind parameters
+
+    //这里可转入摄像机位置计算真正的世界坐标
+    //2维变换X法
+    input.position.xz = float2(dot(vTreeRotationTrig.ywz, input.position.xyz), dot(vTreeRotationTrig.xwy, input.position.xyz));
+    input.normal.xz = float2(dot(vTreeRotationTrig.ywz, input.normal.xyz), dot(vTreeRotationTrig.xwy, input.normal.xyz));
+
+    float3 position = WindEffect(input.position.xyz, vWindParams); //, worldMatrix;
+
+    float2 vLeafRockAndRustle = vLeafAngleScalars.xy * leafAngles[fWindAngleIndex].xy;
+
+    float3 vPivotedPoint = g_mLeafUnitSquare[nCorner].xzy;
+    // adjust by pivot point so rotation occurs around the correct point
+    vPivotedPoint.yz -= vPivotPoint;
+
+    float3 vCorner = vPivotedPoint.xyz * vSize.xyx;
+
+    //下面是先面向镜头再转
+    float3x3 matRotation = RotationMatrix_yAxis(fAzimuth + fRotAngleX);
+    matRotation = mul(matRotation, RotationMatrix_zAxis(fPitch + fRotAngleY));
+    //matRotation = mul(matRotation, RotationMatrix_AxisRadian(cameraRight, fPitch + fRotAngleY));
+    matRotation = mul(matRotation, RotationMatrix_yAxis(-vLeafRockAndRustle.y));
+    matRotation = mul(matRotation, RotationMatrix_xAxis(vLeafRockAndRustle.x));
+    
+    vCorner = mul(matRotation, vCorner);
+    
+    // place and scale the leaf card
+    position.xyz += vCorner.xyz;
+    position.xyz *= vTreePosition.w;
+    position.xyz += vTreePosition.xyz;
+
+    return position;
+}
+
+float3 caculateLeafCardHWInstancingPosition(inout VS_LEAFCARDINSTANCING input)
+{
+    float fAzimuth = cameraAngle.x;      // camera azimuth for billboarding
+    float fPitch = cameraAngle.y;        // camera pitch for billboarding
+    float2 vSize = input.uvCoords1.xy;            // leaf card width & height
+    int nCorner = input.position.w;               // which card corner this vertex represents [0,3]
+    float fRotAngleX = input.uvCoords2.x;         // angle offset for leaf rocking (helps make it distinct)
+    float fRotAngleY = input.uvCoords2.y;         // angle offset for leaf rustling (helps make it distinct)
+    float fWindAngleIndex = input.uvCoords2.z;    // which wind matrix this leaf card will follow
+    float2 vPivotPoint = input.uvCoords1.zw;      // point about which card will rock and rustle
+    
+    float2 vWindParams = input.uvCoords0.zw;      // wind parameters
+
+    //这里可转入摄像机位置计算真正的世界坐标
+    //2维变换X法
+    input.position.xz = float2(dot(input.vTreeRotationTrig.ywz, input.position.xyz), dot(input.vTreeRotationTrig.xwy, input.position.xyz));
+    input.normal.xz = float2(dot(input.vTreeRotationTrig.ywz, input.normal.xyz), dot(input.vTreeRotationTrig.xwy, input.normal.xyz));
+
+    float3 position = WindEffectInstancing(input.position.xyz, vWindParams, input.WindMatrixOffset); //, worldMatrix;
+
+    float2 vLeafRockAndRustle = vLeafAngleScalars.xy * leafAngles[fWindAngleIndex].xy;
+
+    float3 vPivotedPoint = g_mLeafUnitSquare[nCorner].xzy;
+    // adjust by pivot point so rotation occurs around the correct point
+    vPivotedPoint.yz -= vPivotPoint;
+
+    float3 vCorner = vPivotedPoint.xyz * vSize.xyx;
+    
+    float3x3 matRotation = RotationMatrix_yAxis(fAzimuth + fRotAngleX);
+    matRotation = mul(matRotation, RotationMatrix_zAxis(fPitch + fRotAngleY));
+    //matRotation = mul(matRotation, RotationMatrix_AxisRadian(cameraRight, fPitch + fRotAngleY));
+    matRotation = mul(matRotation, RotationMatrix_yAxis(-vLeafRockAndRustle.y));
+    matRotation = mul(matRotation, RotationMatrix_xAxis(vLeafRockAndRustle.x));
+    
+    vCorner = mul(matRotation, vCorner);
+    
+    // place and scale the leaf card
+    position.xyz += vCorner.xyz;
+    position.xyz *= input.vTreePosition.w;
+    position.xyz += input.vTreePosition.xyz;
+
+    return position;
+}

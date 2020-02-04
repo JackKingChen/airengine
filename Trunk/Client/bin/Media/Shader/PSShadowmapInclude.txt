@@ -1,0 +1,174 @@
+float4  JitterScale;
+float4  FilterSize;
+sampler shadowmap : register(s8);
+sampler jitterTexture : register(s9);
+
+
+float CaculateShadow16(float2 vPos, float4 posInLight, float4 amColor, int nSampleCount)
+{
+    float  shadow = 0;
+    
+    float fsize = posInLight.w * FilterSize.w;
+    float4 smcoord = {0, 0, posInLight.zw};
+    float4 jcoord = {vPos * JitterScale.xy, 0, 0};
+    
+    float4 jitter;
+	
+    // Perform 16 samples
+	/*
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = jitter.xy * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = jitter.zw * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+        
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = jitter.xy * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = jitter.zw * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = jitter.xy * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = jitter.zw * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = jitter.xy * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = jitter.zw * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = jitter.xy * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = jitter.zw * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = jitter.xy * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = jitter.zw * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = jitter.xy * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = jitter.zw * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = jitter.xy * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = jitter.zw * fsize + posInLight.xy;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+	*/
+	
+	for (int i = 0; i < nSampleCount / 2; ++i)
+	{
+		jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+		jcoord.z += 0.03125f;
+		smcoord.xy = jitter.xy * fsize + posInLight.xy;
+		shadow += tex2Dproj(shadowmap, smcoord).x;
+		smcoord.xy = jitter.zw * fsize + posInLight.xy;
+		shadow += tex2Dproj(shadowmap, smcoord).x;
+	}
+	
+    shadow /= nSampleCount;
+    shadow = saturate(shadow + amColor.x);
+
+    return shadow;
+}
+
+//这种方法只是用于DX9
+float4 CaculateCascadeShadowmap16(float2 vPos, float4 posInLight, float4 amColor, float2 offset)
+{
+    float  shadow = 0;
+    
+    float fsize = posInLight.w * FilterSize.w;
+    float4 smcoord = {0, 0, posInLight.zw};
+    float4 jcoord = {vPos * JitterScale.xy, 0, 0};
+    
+    float4 jitter;
+	
+    // Perform 16 samples
+	/*
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = (jitter.xy * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = (jitter.zw * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+        
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = (jitter.xy * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = (jitter.zw * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = (jitter.xy * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = (jitter.zw * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = (jitter.xy * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = (jitter.zw * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = (jitter.xy * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = (jitter.zw * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = (jitter.xy * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = (jitter.zw * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = (jitter.xy * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = (jitter.zw * fsize + posInLight.xy) * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+
+    jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+    jcoord.z += 0.03125f;
+    smcoord.xy = jitter.xy * fsize + posInLight.xy * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+    smcoord.xy = jitter.zw * fsize + posInLight.xy * 0.5 + offset;
+    shadow += tex2Dproj(shadowmap, smcoord).x;
+	*/
+	for (int i = 0; i < 8; ++i)
+	{
+		jitter = (2 * tex3D(jitterTexture, jcoord.xyz) - 1.0);
+		jcoord.z += 0.03125f;
+		smcoord.xy = jitter.xy * fsize + posInLight.xy * 0.5 + offset;
+		shadow += tex2Dproj(shadowmap, smcoord).x;
+		smcoord.xy = jitter.zw * fsize + posInLight.xy * 0.5 + offset;
+		shadow += tex2Dproj(shadowmap, smcoord).x;
+	}
+    shadow /= 16;
+    shadow = saturate(shadow + amColor.x);
+
+    return shadow;
+}

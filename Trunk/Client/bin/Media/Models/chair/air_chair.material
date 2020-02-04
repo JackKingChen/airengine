@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Materials>
+    <Material Name="m_shadow_chair" template="mesh_template.xml">
+		<Technique Name="Default">
+			<Pass TextureCount="1">
+				<TextureUnit File="t_villa_chair_d.tga" Mipmap="0">
+					<TextureStage Stage="0">
+						<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+						<TextureBlendAlpha TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+					</TextureStage>
+					<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+				</TextureUnit>        
+				<RenderStates>
+					<BlendStateObject BlendEnable="TRUE" SrcBlend="BLEND_ONE" DstBlend="BLEND_DESTCOLOR" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_DESTALPHA" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+					<FixedPipeStateObject AlphaTestEnable="TRUE" AlphaRef="00000080" AlphaCompareFunc="eCF_GREATER_EQUAL" FogEnable="FALSE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<MaterialParams>
+			<var name="samplerMesh" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="t_villa_chair_d.tga" />
+			<var name="alphaTest" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="0.2" />
+		</MaterialParams>
+		<SamplerStateObject name="samplerMesh" file="Kingbody.dds" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+</Materials>

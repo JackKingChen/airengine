@@ -1,0 +1,27 @@
+struct VS_OUTPUT 
+{     
+    float4 Position : POSITION; 
+};   
+
+
+VS_OUTPUT VSMain(float4 position : POSITION) 
+{     
+    VS_OUTPUT output = (VS_OUTPUT)0;
+    output.Position = float4(position.xyz, 1);       
+    return output; 
+} 
+
+
+struct PS_OUTPUT 
+{     
+    float4 Depth : COLOR0;     
+    float4 Normals : COLOR1; 
+};   
+
+PS_OUTPUT PSMain() 
+{     
+    PS_OUTPUT output = (PS_OUTPUT)0;
+    output.Depth = 1.0f;       
+    output.Normals = float4(0.5, 0.5, 0.5, 1);       
+    return output;
+}

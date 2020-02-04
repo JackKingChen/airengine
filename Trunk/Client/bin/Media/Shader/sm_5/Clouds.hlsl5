@@ -1,0 +1,146 @@
+#include "clipplane.hlsl5"
+
+struct VS_INPUT
+{
+	float3 iPosition	        : POSITION;
+	float3 iNPosition           : TEXCOORD0;
+};
+
+struct VS_OUTPUT
+{
+	float4 oPosition			: SV_POSITION;
+	float3 oNPos       			: TEXCOORD0;
+    float clip : SV_ClipDistance0;
+};
+
+struct PS_INPUT
+{
+    float4 oPosition			: SV_POSITION;
+	float3 iNPos      			: TEXCOORD0;
+    float clip : SV_ClipDistance0;
+};
+
+struct PS_OUTPUT
+{
+	float4 oColor				: COLOR;
+};
+
+
+cbuffer cbVSCloud
+{
+//--------------------------vs const table begin
+    float4x4  wvpMatrix;	
+    float4x4  worldMatrix;
+//--------------------------vs const table end	
+};
+
+//--------------------------ps const table begin
+cbuffer cbPSCloud
+{
+#ifdef LDR
+    float     uExposure;
+#endif // LDR
+
+    // Sun information
+    float3    uSunPosition;
+    float3    uSunColor;
+
+    // Main cloud layer parameters
+    float     uHeight;
+    float     uTime;
+    float     uScale;
+    float2    uWindDirection;
+
+    // Advanced cloud layer parameters
+    float     uCloudLayerHeightVolume; 				// 0.25
+    float     uCloudLayerVolumetricDisplacement; 	// 0.01
+    float3    uAmbientLuminosity; 					// 0.55 0.55 0.55
+    float     uNormalMultiplier; 					// 2
+    float     uDetailAttenuation; 					// 0.45
+    float     uDistanceAttenuation; 				// 0.05
+
+    float3		weatherColor;
+    float		weatherMultiplier;
+};
+
+Texture2D 	texCloud;
+Texture2D 	texNormal;
+Texture2D 	texDensity;
+SamplerState   uCloud;
+SamplerState   uNormal;
+SamplerState   uDensity;		
+//--------------------------ps const table end
+
+
+
+
+VS_OUTPUT VSMain( VS_INPUT input )
+{
+	VS_OUTPUT output = (VS_OUTPUT)0;	
+	output.oPosition = mul( float4(input.iPosition, 1.0), wvpMatrix );
+    output.oNPos  	 = input.iNPosition;
+    output.clip = 1.0;
+    if (nClipEnable > 0)
+    {
+        output.clip = CaculateClipPlane(float4(input.iPosition.xyz, 1.0), worldMatrix);
+    }
+    return output;
+}
+
+
+
+PS_OUTPUT PSMain( PS_INPUT input ) : SV_TARGET
+{
+	PS_OUTPUT output = (PS_OUTPUT)0;
+	
+    // Get the cloud pixel lenght on the projected plane
+    float vh = uHeight / input.iNPos.y;
+    
+    // Get the 3D position of the cloud pixel
+    float3 CloudPosition = input.iNPos * vh;
+    
+    float2 twcoord = uTime * uWindDirection * 0.25f;
+    
+    // Get texture coords
+    float2 TexCoord		= CloudPosition.xz * uScale;
+    float  Density   	=        texDensity.Sample( uDensity, TexCoord + twcoord ).r;
+    float3 Normal   	= -( 2 * texNormal.Sample( uNormal,  TexCoord + twcoord ).xyz - 1 );
+    Normal.zy 			= Normal.yz;
+ 
+    ///------------ Volumetric effect:
+    float CloudLayerHeightVolume 			= uCloudLayerHeightVolume * input.iNPos.y;
+    float CloudLayerVolumetricDisplacement 	= uCloudLayerVolumetricDisplacement * input.iNPos.y;
+    float3 iNewPosition 					= normalize( input.iNPos + CloudLayerVolumetricDisplacement * float3( Normal.x, 0, Normal.z ) );
+    vh 										= ( uHeight + uHeight * ( 1 - Density ) * CloudLayerHeightVolume) / iNewPosition.y;
+    CloudPosition 							= iNewPosition * vh;
+    TexCoord      							= CloudPosition.xz * uScale;
+    Density    								= texDensity.Sample( uDensity, TexCoord + twcoord ).r;
+    ///------------
+    
+    float3 SunToPixel 	= CloudPosition - uSunPosition;    
+    float  CloudDetail 	=        texCloud.Sample( uCloud,  TexCoord - twcoord ).r;
+    Normal     			= -( 2 * texNormal.Sample( uNormal, TexCoord + twcoord ).xyz - 1 );
+    Normal.zy  			= Normal.yz;
+    Normal.xz 		   *= uNormalMultiplier;
+
+    float3 PixelColor 	= float3(0,0,0);
+    
+    // AMBIENT addition
+    PixelColor 		   += uAmbientLuminosity;
+    
+    // SUN addition 
+    PixelColor         += uSunColor * saturate( dot( -normalize(Normal), normalize(uSunPosition) ) );
+    
+    // FINAL colour
+    float Alpha 		= Density * saturate( 10 * saturate( -uDistanceAttenuation + input.iNPos.y ) );
+    
+    output.oColor 		= float4( PixelColor * ( 1- Density * 0.35 ), Alpha * saturate( 1 - CloudDetail * uDetailAttenuation ) );
+    
+#ifdef LDR
+    output.oColor.xyz 	= float3( 1 - exp( -uExposure * output.oColor.xyz ) );
+#endif // LDR
+
+	output.oColor.xyz 	= lerp( weatherColor, output.oColor.xyz, weatherMultiplier );
+
+	return output;
+}

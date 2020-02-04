@@ -1,0 +1,30 @@
+
+sampler TextureRTTUnderWater;	
+sampler TextureBump1;	
+sampler TextureBump2;					
+
+float frameTime;						
+
+struct VS_OUTPUT
+{
+    float2  texCoord     : TEXCOORD0;
+};
+
+struct PS_OUTPUT
+{
+    float4  Color        : COLOR0;       // output pixel color
+};
+
+
+PS_OUTPUT PSMain(VS_OUTPUT input)
+{
+    PS_OUTPUT output = (PS_OUTPUT)0;
+    
+    float2 bump1  = tex2D(TextureBump1, input.texCoord + (frameTime*0.04)).xy;
+    float2 bump2	= tex2D(TextureBump2, input.texCoord - (frameTime*0.04)).xy;
+    float2 texel  = input.texCoord + bump1/60 + bump2/50;
+    
+    output.Color = tex2D( TextureRTTUnderWater, texel );
+    
+    return output;
+}

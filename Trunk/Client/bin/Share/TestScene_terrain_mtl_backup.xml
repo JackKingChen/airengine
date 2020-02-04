@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Materials ver="1.0">
+    <Material Name="block_0">
+<Technique Name="Default">
+<Pass Name="" TextureCount="4" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain">
+        <TextureUnit File="TestScene_pass0_block0.png" Mipmap="1" Filter="TEXF_LINEAR" AddressMode="TADDRESS_CLAMP">
+        <TextureStage Stage="0">
+<TextureBlendColor TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_CLAMP" AddressV="TADDRESS_CLAMP" AddressW="TADDRESS_CLAMP"/>
+</TextureUnit>
+        
+<TextureUnit File="dibiao000000.dds" Mipmap="9" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP" TextureTransform="TRUE" TextureScale="(40.000000,40.000000,1.000000)" TextureTranslation="(0.000000,0.000000,0.000000)">
+        <TextureStage Stage="1">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>
+        
+<TextureUnit File="dibiao000008.dds" Mipmap="9" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP" TextureTransform="TRUE" TextureScale="(40.000000,40.000000,1.000000)" TextureTranslation="(0.000000,0.000000,0.000000)">
+        <TextureStage Stage="2">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>
+        
+<TextureUnit File="dibiao006.dds" Mipmap="9" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP" TextureTransform="TRUE" TextureScale="(40.000000,40.000000,1.000000)" TextureTranslation="(0.000000,0.000000,0.000000)">
+        <TextureStage Stage="3">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>
+<RenderStates>
+<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+</RenderStates>
+<VertexShader Name="VSTerrain"/>
+<PixelShader Name="PSTerrain"/>
+</Pass>
+</Technique>
+<LightParam DIFFUSE="(1.000000,1.000000,1.000000,1.000000)" SPECULAR="(0.000000,0.000000,0.000000,1.000000)" EMISSIVE="(0.000000,0.000000,0.000000,1.000000)" AMBIENT="(1.000000,1.000000,1.000000,1.000000)" SHINESS="255.0000"/>
+</Material>
+<Material Name="block_1">
+<Technique Name="Default">
+<Pass Name="" TextureCount="4" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain">
+        <TextureUnit File="TestScene_pass0_block1.png" Mipmap="1" Filter="TEXF_LINEAR" AddressMode="TADDRESS_CLAMP">
+        <TextureStage Stage="0">
+<TextureBlendColor TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_CLAMP" AddressV="TADDRESS_CLAMP" AddressW="TADDRESS_CLAMP"/>
+</TextureUnit>
+        
+<TextureUnit File="dibiao000000.dds" Mipmap="9" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP" TextureTransform="TRUE" TextureScale="(40.000000,40.000000,1.000000)" TextureTranslation="(0.000000,0.000000,0.000000)">
+        <TextureStage Stage="1">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>
+        
+<TextureUnit File="dibiao000008.dds" Mipmap="9" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP" TextureTransform="TRUE" TextureScale="(40.000000,40.000000,1.000000)" TextureTranslation="(0.000000,0.000000,0.000000)">
+        <TextureStage Stage="2">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>
+        
+<TextureUnit File="dibiao000007.dds" Mipmap="9" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP" TextureTransform="TRUE" TextureScale="(40.000000,40.000000,1.000000)" TextureTranslation="(0.000000,0.000000,0.000000)">
+        <TextureStage Stage="3">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>
+<RenderStates>
+<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+</RenderStates>
+<VertexShader Name="VSTerrain"/>
+<PixelShader Name="PSTerrain"/>
+</Pass>
+</Technique>
+<LightParam DIFFUSE="(1.000000,1.000000,1.000000,1.000000)" SPECULAR="(0.000000,0.000000,0.000000,1.000000)" EMISSIVE="(0.000000,0.000000,0.000000,1.000000)" AMBIENT="(1.000000,1.000000,1.000000,1.000000)" SHINESS="255.0000"/>
+</Material>
+<Material Name="block_2">
+<Technique Name="Default">
+<Pass Name="" TextureCount="3" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain">
+        <TextureUnit File="TestScene_pass0_block2.png" Mipmap="1" Filter="TEXF_LINEAR" AddressMode="TADDRESS_CLAMP">
+        <TextureStage Stage="0">
+<TextureBlendColor TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_CLAMP" AddressV="TADDRESS_CLAMP" AddressW="TADDRESS_CLAMP"/>
+</TextureUnit>
+        
+<TextureUnit File="dibiao000000.dds" Mipmap="9" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP" TextureTransform="TRUE" TextureScale="(40.000000,40.000000,1.000000)" TextureTranslation="(0.000000,0.000000,0.000000)">
+        <TextureStage Stage="1">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>
+        
+<TextureUnit File="dibiao000008.dds" Mipmap="9" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP" TextureTransform="TRUE" TextureScale="(40.000000,40.000000,1.000000)" TextureTranslation="(0.000000,0.000000,0.000000)">
+        <TextureStage Stage="2">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>
+<RenderStates>
+<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+</RenderStates>
+<VertexShader Name="VSTerrain"/>
+<PixelShader Name="PSTerrain"/>
+</Pass>
+</Technique>
+<LightParam DIFFUSE="(1.000000,1.000000,1.000000,1.000000)" SPECULAR="(0.000000,0.000000,0.000000,1.000000)" EMISSIVE="(0.000000,0.000000,0.000000,1.000000)" AMBIENT="(1.000000,1.000000,1.000000,1.000000)" SHINESS="255.0000"/>
+</Material>
+<Material Name="block_3">
+<Technique Name="Default">
+<Pass Name="" TextureCount="4" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain">
+        <TextureUnit File="TestScene_pass0_block3.png" Mipmap="1" Filter="TEXF_LINEAR" AddressMode="TADDRESS_CLAMP">
+        <TextureStage Stage="0">
+<TextureBlendColor TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_CLAMP" AddressV="TADDRESS_CLAMP" AddressW="TADDRESS_CLAMP"/>
+</TextureUnit>
+        
+<TextureUnit File="dibiao000000.dds" Mipmap="9" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP" TextureTransform="TRUE" TextureScale="(40.000000,40.000000,1.000000)" TextureTranslation="(0.000000,0.000000,0.000000)">
+        <TextureStage Stage="1">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>
+        
+<TextureUnit File="dibiao000008.dds" Mipmap="9" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP" TextureTransform="TRUE" TextureScale="(40.000000,40.000000,1.000000)" TextureTranslation="(0.000000,0.000000,0.000000)">
+        <TextureStage Stage="2">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>
+        
+<TextureUnit File="dibiao000007.dds" Mipmap="9" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP" TextureTransform="TRUE" TextureScale="(40.000000,40.000000,1.000000)" TextureTranslation="(0.000000,0.000000,0.000000)">
+        <TextureStage Stage="3">
+<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+</TextureStage>
+<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</TextureUnit>
+<RenderStates>
+<BlendStateObject BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+<DepthStencilStateObject ZEnable="TRUE" ZWrite="TRUE" StencilEnable="FALSE"/>
+<RasterizerStateObject FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+<FixedPipeStateObject AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+</RenderStates>
+<VertexShader Name="VSTerrain"/>
+<PixelShader Name="PSTerrain"/>
+</Pass>
+</Technique>
+<LightParam DIFFUSE="(1.000000,1.000000,1.000000,1.000000)" SPECULAR="(0.000000,0.000000,0.000000,1.000000)" EMISSIVE="(0.000000,0.000000,0.000000,1.000000)" AMBIENT="(1.000000,1.000000,1.000000,1.000000)" SHINESS="255.0000"/>
+</Material>
+</Materials>

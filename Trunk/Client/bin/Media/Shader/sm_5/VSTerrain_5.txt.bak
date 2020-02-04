@@ -1,0 +1,86 @@
+#include "VertexDef.txt"
+
+struct VS_INPUT
+{
+    float4 position : POSITION;
+    float3 normal: NORMAL;
+    float4 color : COLOR;
+    float2 uvCoords : TEXCOORD;
+};
+
+#ifdef RENDER_TO_GBUFFER
+#define VS_OUTPUT VS_MeshRenderToGBufferOutput
+#else
+
+#ifdef SHADOWMAP
+  #ifdef LIGHT_PRE_PASS
+#define VS_OUTPUT VS_TerrainLPPWithShadowOutput  
+  #else
+    #ifdef CSM
+#define VS_OUTPUT VS_TerrainAcceptCSMOutput
+    #else
+#define VS_OUTPUT VS_TerrainAcceptShadowOutput 
+    #endif
+  #endif
+#else
+  #ifdef LIGHT_PRE_PASS
+#define VS_OUTPUT VS_TerrainLPPOutput 
+  #else
+#define VS_OUTPUT VS_TerrainOutput 
+  #endif
+#endif
+
+#endif
+
+cbuffer cbPerObject : register( b0 )
+{
+    matrix wvpMatrix;
+    matrix worldMatrix;
+    matrix WorldViewMatrix;
+#ifdef SHADOWMAP
+    float4 CascadeFars;
+    matrix LightSpaceProjMatrix;  //在以灯光为视点的投影空间
+    matrix textureProjMatrix;
+    matrix LightSpaceProjMatrixArray[4];
+    float4x4 matViewToLightProj;  // Transform from view space to light projection space
+#endif
+    float3  sunLight;
+    float3  cameraPos;
+    float4  ambientColor;
+    float4  sunColor;    //太阳光颜色
+    float   shininess;
+    float3 ka;
+    float3 kd;
+    float3 ks;
+};
+
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+    VS_OUTPUT output = (VS_OUTPUT)0;
+	
+    output.position = mul(input.position, wvpMatrix);
+    
+    output.texCoords = input.uvCoords;
+    output.color = input.color;
+    output.posWorld = input.position.xyz;
+
+    float3 ambient = ka * ambientColor.rgb;
+
+    // Compute the diffuse term
+    float3 N = input.normal;
+	
+    float diffuseLight = max(dot(sunLight, N), 0);
+    float3 diffuse = kd * sunColor.rgb * diffuseLight;
+    //diffuse = clamp(diffuse, ambient, float3(1.0, 1.0, 1.0));
+
+    float3 V = normalize(cameraPos - input.position.xyz);     //眼睛到点的向量
+    float3 H = normalize(sunLight + V);               //用了blinn模型计算光照
+    float specularLight = pow(max(dot(H, N), 0), shininess);
+
+    float3 specular = ks * ambientColor.rgb * specularLight;
+
+    output.color.rgb = ambient + diffuse + specular;
+    output.color.a = 1.0;
+
+    return output;
+}

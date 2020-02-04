@@ -1,0 +1,94 @@
+#include "VertexDef_5.txt"
+
+cbuffer cbSkinMesh : register( b0 )
+{
+    float4x3  boneMatrix[50];
+    matrix ViewProjMatrix;
+
+#ifdef RENDER_TO_GBUFFER
+    matrix viewMatrix;
+    matrix worldMatrix;
+#endif
+
+#ifdef SHADOWMAP
+    matrix LightSpaceProjMatrix;  //在以灯光为视点的投影空间
+#endif
+};
+
+
+#define VS_INPUT VS_SkinMeshInput 
+
+#ifdef RENDER_TO_SHADOWMAP
+#define VS_OUTPUT VS_MeshRenderToShadowmapOutput
+#elif defined(RENDER_TO_GBUFFER)
+#define VS_OUTPUT VS_MeshRenderToGBufferOutput
+#else
+  #ifdef SHADOWMAP
+    #ifdef LIGHT_PRE_PASS   
+#define VS_OUTPUT VS_MeshLPPWithShadowOutput    //既接受shadowmap也接受lightprepass
+    #else  
+#define VS_OUTPUT VS_MeshAcceptShadowOutput  //只接受shadowmap
+    #endif
+  #elif defined(LIGHT_PRE_PASS)  //只接受lightprepass光照
+#define VS_OUTPUT VS_MeshLPPOutput
+  #else   //什么宏都没定义
+#define VS_OUTPUT VS_MeshOutput
+  #endif
+#endif
+
+
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+    VS_OUTPUT   output = (VS_OUTPUT)0;
+
+
+    float i;
+    float4 inPos = input.position;
+    float3 tempPos;
+
+    tempPos  = mul( inPos, boneMatrix[input.Indices.x] ) * input.Weights.x;
+    tempPos += mul( inPos, boneMatrix[input.Indices.y] ) * input.Weights.y;
+    tempPos += mul( inPos, boneMatrix[input.Indices.z] ) * input.Weights.z;
+    tempPos += mul( inPos, boneMatrix[input.Indices.w] ) * input.Weights.w;
+    
+    float4 finalPos;
+    finalPos.xyz = tempPos;
+    finalPos.w = 1.0;
+    output.position = mul(finalPos, ViewProjMatrix);
+
+#if defined(RENDER_TO_GBUFFER)
+    float4 vNor = float4( input.normal, 0 );
+    //float4 finalNormal;
+    tempPos  = mul( vNor, boneMatrix[input.Indices.x] ) * input.Weights.x;
+    tempPos += mul( vNor, boneMatrix[input.Indices.y] ) * input.Weights.y;
+    tempPos += mul( vNor, boneMatrix[input.Indices.z] ) * input.Weights.z;
+    tempPos += mul( vNor, boneMatrix[input.Indices.w] ) * input.Weights.w;
+    output.normal = mul(float4(tempPos, 0), viewMatrix);
+    output.DepthInView = mul(finalPos, viewMatrix).z; 
+#else
+  #ifdef SHADOWMAP
+    output.posWorld = finalPos.xyz;
+    output.posInLight = mul(/*input.position*/float4(output.posWorld, 1), LightSpaceProjMatrix);   //这里会有问题
+    #ifdef LIGHT_PRE_PASS
+    // 既接收shadowmap也接收lpp
+    output.posProj = output.position;
+    #endif
+  #elif defined(LIGHT_PRE_PASS)
+    output.posProj = output.position;
+  #endif
+
+  #ifndef RENDER_TO_SHADOWMAP
+    // 计算颜色值
+    output.color = input.color;
+  #endif
+#endif
+
+    // 计算纹理坐标值
+    output.texCoords = input.uvCoords.xy;
+    
+    return output;
+}
+
+
+
+

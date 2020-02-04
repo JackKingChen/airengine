@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="gb2312"?>
+<ParticleSystem image="I1.dds" particle_width="20.00" particle_height="50.00" quota="500" billboard_type="BBT_HORZ_SELF_DIR_FACE_CAM" boundingbox_autoupdate="FALSE" boundingbox_max="55.11, 98.28, 64.27" boundingbox_min="-60.94, -14.78, -63.56" common_dir="(0.00, 1.00, 0.00)" common_up_dir="(0.00, 0.00, 1.00)" cull_back_face="true" emitted_emitter_quota="20" create_trail="TRUE" trail_segment_count="0" max_chain_elem="20" init_trail_width="10.00" trail_width_change="-1.00" trail_use_vertex_color="TRUE" trail_use_tex_coord="TRUE" trail_tex_dir="u" src_blend="BLEND_SRCALPHA" dest_blend="BLEND_DESTALPHA" blend_mode="BLENDOP_ADD" RenderType="1" RenderObject="">
+    <Emitter type="PointEmitter" name="" angle="186.999969" vert_angle="180.999969" time_to_live="1.800000" time_to_live_min="1.800000" time_to_live_max="1.800000" direction="(0.000000,1.000000,0.000000)" position="(0.000000,0.000000,0.000000)" limit_in_plane="false" velocity_min="120.000000" velocity_max="180.000000" emission_rate="200.000000" color_range_start="(1.000000, 0.600000, 1.000000, 0.000000)" color_range_end="(1.000000, 0.000000, 0.300000, 1.000000)" duration="0.300000" repeat_delay="0.800000" init_scale_min="0.800000" init_scale_max="0.900000" delay_emit_time="0.000000" accum_emit_count="0"/>
+<Affector type="AlphaSegment" time_length="10.000000">
+<time_segment alpha="0.400000" time_flag="0.000000"/>
+<time_segment alpha="0.100000" time_flag="1.000000"/>
+<time_segment alpha="0.000000" time_flag="1.600000"/>
+</Affector>
+<Affector type="FullScaleSegment" time_length="10.000000">
+<time_segment width_scale="1.000000" height_scale="1.000000" time_flag="0.000000"/>
+<time_segment width_scale="3.000000" height_scale="2.000000" time_flag="0.420000"/>
+<time_segment width_scale="3.000000" height_scale="2.000000" time_flag="1.510000"/>
+<time_segment width_scale="0.000000" height_scale="0.000000" time_flag="1.800000"/>
+</Affector>
+<Affector type="PointAttract" attract_position="(0.000000, 50.000000, 0.000000)" strength="550.000000" exp_attenuate="0.991000" ea_radius="10.000000"/>
+<Affector type="AxisRotator" axis_direction="(0.000000, 1.000000, 0.000000)" axis_position="(0.000000, 0.000000, 0.000000)" rotate_clockwise="FALSE" attenuate_from_in_to_out="TRUE" affect_radius="200.000000" affect_min="0.000000" affect_max="1.000000" attenuate_rate_by_time_elapse="50.000000" init_rotate_speed="300.000000"/>
+</ParticleSystem>

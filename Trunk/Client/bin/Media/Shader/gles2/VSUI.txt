@@ -1,0 +1,13 @@
+attribute mediump vec4 inPosition;
+attribute mediump vec4 inColor;
+attribute mediump vec2 uvCoords;
+uniform mat4 projectionMatrix;
+varying mediump vec4  Color;
+varying mediump vec2  TexCoord; 
+void main()
+{ 
+    gl_Position = projectionMatrix * vec4(inPosition.xyz, 1.0);
+    Color = inColor;
+    TexCoord = uvCoords;
+    //TexCoord.y = 1.0 - TexCoord.y;
+}

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Materials ver="1.0">
+    <Material Name="Compositor" template="compositor_template.xml">
+	</Material>
+	<Material Name="Distortion">
+		<Technique Name="EffectUnderWater" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSMain" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader Name="PSUnderWater.txt"/>
+		<MaterialParams>
+			<var name="TextureRTTUnderWater" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="TextureBump1" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="TextureBump2" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		</MaterialParams>
+		<SamplerStateObject name="TextureRTTUnderWater" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="TextureBump1" stage="1" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="TextureBump2" stage="2" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<!--
+	<Material Name="Bloom">
+		<Technique Name="Default">
+			<Pass Name="">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				<VertexShader file="VSPostEffect.txt"/>
+				<PixelShader file="PSBloom.txt"/>
+			</Pass>
+		</Technique>
+	</Material>
+	-->
+	<Material Name="Blur">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSBlur" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSBlur.txt"/>
+		<MaterialParams>
+			<var name="srcColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="TexelKernel" constantType="CS_FLOAT" VariantType="VAR_POINTER" />
+			<var name="BlurWeights" constantType="CS_FLOAT" VariantType="VAR_POINTER" />
+		</MaterialParams>
+		<SamplerStateObject name="srcColor" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="RayBlur">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSBlur" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+				
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSRayBlur.txt"/>
+	</Material>
+	<Material Name="Monochrome">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSBlur" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSMonochrome.txt"/>
+		<MaterialParams>
+			<var name="srcColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		</MaterialParams>
+		<SamplerStateObject name="srcColor" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="ToneMap">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSBlur" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSToneMap.txt"/>
+		<MaterialParams>
+			<var name="srcColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		</MaterialParams>
+		<SamplerStateObject name="srcColor" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="BrightPass">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSBlur" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSBrightPass.txt"/>
+		<MaterialParams>
+			<var name="srcColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="luminance" constantType="CS_FLOAT" VariantType="VAR_POINTER" />
+		</MaterialParams>
+		<SamplerStateObject name="srcColor" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="BloomBlur">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSBloomBlur" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>	
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSBlur.txt"/>
+		<MaterialParams>
+			<var name="srcColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="bloomScale" constantType="CS_FLOAT" VariantType="VAR_POINTER" />
+		</MaterialParams>
+		<SamplerStateObject name="srcColor" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="NormalCombine">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSNormalCombine" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSCombine.txt"/>
+		<MaterialParams>
+			<var name="srcColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="sceneColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		</MaterialParams>
+		<SamplerStateObject name="srcColor" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="sceneColor" stage="1" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="DownFilter4">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSDownFilter4" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSDownOrUpFilter4.txt"/>
+		<MaterialParams>
+			<var name="srcColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="TexCoordsDownFilter" constantType="CS_FLOAT" VariantType="VAR_POINTER" />
+		</MaterialParams>
+		<SamplerStateObject name="srcColor" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="UpFilter4">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSUpFilter4" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSDownOrUpFilter4.txt"/>
+		<MaterialParams>
+			<var name="srcColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="TexCoordsDownFilter" constantType="CS_FLOAT" VariantType="VAR_POINTER" />
+		</MaterialParams>
+		<SamplerStateObject name="srcColor" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="SoftLightCombine">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSSoftLight" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSCombine.txt"/>
+		<MaterialParams>
+			<var name="srcColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="sceneColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		</MaterialParams>
+		<SamplerStateObject name="srcColor" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="sceneColor" stage="1" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="ScreenCombine">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSScreen" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSCombine.txt"/>
+		<MaterialParams>
+			<var name="srcColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="sceneColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		</MaterialParams>
+		<SamplerStateObject name="srcColor" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="sceneColor" stage="1" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="ColorBurnCombine">
+		<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+			<Pass Name="" VertexShaderFunction="VSMain" PixelShaderFunction="PSColorBurn" VertexDeclaration="VS_Pos4_color_texcoord">
+				<RenderStates>
+					<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>					
+					<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+					<DepthStencilState ZEnable="TRUE" ZWrite="FALSE" StencilEnable="FALSE" ZCompareFunc="eCF_LESS_EQUAL"/>
+					<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="FALSE" LightEnable="FALSE"/>
+				</RenderStates>
+			</Pass>
+		</Technique>
+		<VertexShader file="VSPostEffect.txt"/>
+		<PixelShader file="PSCombine.txt"/>
+		<MaterialParams>
+			<var name="srcColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+			<var name="sceneColor" constantType="CS_Sampler" VariantType="VAR_TEXTURE" />
+		</MaterialParams>
+		<SamplerStateObject name="srcColor" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+		<SamplerStateObject name="sceneColor" stage="1" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+	</Material>
+	<Material Name="DoNothing">
+	<Technique Name="Default" Flow="FLOW_SCENE" VSVersion = "vs_3_0" PSVersion = "ps_3_0">
+	<Pass Name="">
+	<!--
+	<TextureUnit File="" Mipmap="1">
+	<TextureStage Stage="0">
+	<TextureBlendColor TextureOp="TOP_MODULATE" Arg1="TA_TEXTURE" Arg2="TA_DIFFUSE"/>
+	<TextureBlendAlpha TextureOp="TOP_SELECTARG1" Arg1="TA_TEXTURE" Arg2="TA_CURRENT"/>
+	</TextureStage>
+	<SamplerStateObject Filter="TEXF_LINEAR" AddressU="TADDRESS_MIRROR" AddressV="TADDRESS_MIRROR" AddressW="TADDRESS_MIRROR"/>
+	</TextureUnit>
+	-->
+	<RenderStates>
+	<BlendState BlendEnable="FALSE" SrcBlend="BLEND_ONE" DstBlend="BLEND_ZERO" BlendOpt="BLENDOP_ADD" SrcBlendAlpha="BLEND_ONE" DstBlendAlpha="BLEND_ZERO" BlendOptAlpha="BLENDOP_ADD"/>
+	<RasterizerState FillMode="FILL_SOLID" CullMode="CULL_CCW"/>
+	<DepthStencilState ZEnable="FALSE" ZWrite="FALSE" StencilEnable="FALSE"/>
+	<FixedPipeState AlphaTestEnable="FALSE" AlphaRef="0" AlphaCompareFunc="eCF_ALWAYS_PASS" FogEnable="TRUE" LightEnable="FALSE"/>
+	</RenderStates>
+	<VertexShader Name="VSPostEffect"/>
+	<PixelShader Name="PSDoNothing"/>
+	</Pass>
+	</Technique>
+	</Material>
+</Materials>

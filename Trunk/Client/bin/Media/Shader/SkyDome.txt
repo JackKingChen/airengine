@@ -1,0 +1,183 @@
+
+float4x4	wvpMatrix;				//WorldViewProj矩阵
+float3 		uLightDir;				//太阳光方向
+float3 		uCameraPos;				//摄像机当前位置
+float3 		uInvWaveLength;			//1 / pow(waveLength, 4),对应于RGB
+float  		uInnerRadius;			//内径
+float  		uKrESun;				//Kr * ESun
+float  		uKmESun;				//Km * ESun
+float  		uKr4PI;					//Kr * 4 * pi
+float  		uKm4PI;					//Km * 4 * pi
+float 		uScale;					//1 / (outerRadius - innerRadius)
+float 		uScaleDepth;			//Where the average atmosphere density is found
+float 		uScaleOverScaleDepth;	//Scale / ScaleDepth
+int   		uNumberOfSamples;		//取样数量
+float 		uSamples;				//取样数量
+float  		uG;						//Phase function
+float  		uG2;					//G * G
+
+float3		weatherColor;
+float		weatherMultiplier;
+
+#ifdef LDR 
+float  		uExposure;				//曝光系数
+#endif 
+
+#ifdef STARFIELD
+float		uTime;					//当前时间参数[0-24小时], x:当前时间, y:日出时间, z:日落时间
+sampler 	texStarfield;// : register(s0);			//星空纹理
+#endif
+
+
+
+float scale(float cos, float uScaleDepth)
+{
+	float x = 1.0 - cos;
+	return uScaleDepth * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));
+}
+
+
+struct VS_INPUT
+{
+	float4 iPosition	        : POSITION;
+	float3 iNPosition           : TEXCOORD0;
+	float2 iUV                  : TEXCOORD1;
+	float  iOpacity             : TEXCOORD2;
+};
+
+struct VS_OUTPUT
+{
+	float4 oPosition			: POSITION;
+	float2 oUV              	: TEXCOORD0;
+	float3 oRayleighColor   	: TEXCOORD1;
+	float3 oMieColor        	: TEXCOORD2;
+	float3 oDirection       	: TEXCOORD3;
+	float  oOpacity         	: TEXCOORD4;
+	float  oHeight          	: TEXCOORD5;
+	float3 oAccumColor			: TEXCOORD6;
+};
+
+struct PS_INPUT
+{
+	float4 iPosition			: POSITION;
+	float2 iUV              	: TEXCOORD0;
+	float3 iRayleighColor   	: TEXCOORD1;
+	float3 iMieColor        	: TEXCOORD2;
+	float3 iDirection       	: TEXCOORD3;
+	float  iOpacity         	: TEXCOORD4;
+	float  iHeight          	: TEXCOORD5;
+	float3 iAccumColor			: TEXCOORD6;
+};
+
+struct PS_OUTPUT
+{
+	float4 oColor				: COLOR;
+};
+
+
+
+
+
+VS_OUTPUT VSMain( VS_INPUT input )
+{
+	VS_OUTPUT output = (VS_OUTPUT)0;
+	
+	int nSamples = 4;
+	float fSamples = 4.0;
+	
+    // Clip space position
+	output.oPosition   = mul(input.iPosition, wvpMatrix);
+
+	float3 v3Pos = input.iNPosition;
+	v3Pos.y += uInnerRadius;
+
+	// 顶点到摄像机的射线
+    float3 v3Ray = v3Pos - uCameraPos;
+	float fFar = length(v3Ray);
+	v3Ray /= fFar;
+	
+	// Calculate the ray's starting position, then calculate its scattering offset
+	float3 v3Start = uCameraPos;
+	float fHeight = uCameraPos.y;
+	float fStartAngle = dot(v3Ray, v3Start) / fHeight;
+	float fDepth = exp(uScaleOverScaleDepth * (uInnerRadius - uCameraPos.y));
+	float fStartOffset = fDepth * scale(fStartAngle, uScaleDepth);
+
+    // Init loop variables
+	float fSampleLength = fFar / fSamples;
+	float fScaledLength = fSampleLength * uScale;
+	float3 v3SampleRay = v3Ray * fSampleLength;
+	float3 v3SamplePoint = v3Start + v3SampleRay * 0.5f;
+	
+	// Loop the ray
+	float3 color = float3(0,0,0);
+	for ( int i = 0; i < nSamples; i++ )
+	{
+		float fHeight = length(v3SamplePoint);
+		float fDepth = exp(uScaleOverScaleDepth * (uInnerRadius - fHeight));
+		
+		float fLightAngle = dot(uLightDir, v3SamplePoint) / fHeight;
+		float fCameraAngle = dot(v3Ray, v3SamplePoint) / fHeight;
+		
+		float fScatter = (fStartOffset + fDepth*(scale(fLightAngle, uScaleDepth) - scale(fCameraAngle, uScaleDepth)));
+		float3 v3Attenuate = exp(-fScatter * (uInvWaveLength * uKr4PI + uKm4PI));
+		
+		// Accumulate color
+		v3Attenuate *= (fDepth * fScaledLength);
+		color += v3Attenuate;
+		
+		// Next sample point
+		v3SamplePoint += v3SampleRay;
+	}
+
+    // Outputs
+    output.oRayleighColor 	= color * (uInvWaveLength * uKrESun);
+    output.oMieColor      	= color * uKmESun;
+    output.oDirection     	= uCameraPos - v3Pos;
+    output.oUV 				= input.iUV;
+    output.oOpacity 		= input.iOpacity;
+    output.oHeight 			= 1 - input.iNPosition.y;
+    output.oAccumColor		= input.iNPosition;
+
+    return output;
+}
+
+
+
+
+PS_OUTPUT PSMain( PS_INPUT input )
+{
+	PS_OUTPUT output = (PS_OUTPUT)0;
+	
+    float cos = dot(uLightDir, input.iDirection) / length( input.iDirection );
+	float cos2 = cos*cos;
+	
+	float rayleighPhase = 0.75 * (1.0 + 0.5*cos2);
+	
+	float miePhase = 1.5f * ((1.0f - uG2) / (2.0f + uG2)) * (1.0f + cos2) / pow((1.0f + uG2 - 2.0f * uG * cos), 1.5f);
+
+#ifdef LDR
+	output.oColor = float4((1 - exp(-uExposure * (rayleighPhase * input.iRayleighColor + miePhase * input.iMieColor))), input.iOpacity);
+#else
+    output.oColor = float4(rayleighPhase * input.iRayleighColor + miePhase * input.iMieColor, input.iOpacity);
+#endif
+
+	// For night rendering
+	float nightmult = saturate(1 - max(output.oColor.x, max(output.oColor.y, output.oColor.z))*10);
+	
+
+#ifdef STARFIELD
+	float3 starColor = tex2D(texStarfield, input.iUV+uTime).xyz * input.iAccumColor.y;
+	output.oColor.xyz += nightmult *(float3(0.05, 0.05, 0.1)*(2-0.75*saturate(-uLightDir.y))*pow(input.iHeight,3) + starColor * (0.35f + saturate(-uLightDir.y*0.45f))); 
+
+#else
+	output.oColor.xyz += nightmult *(float3(0.05, 0.05, 0.1)*(2-0.75*saturate(-uLightDir.y))*pow(input.iHeight,3)); 
+#endif
+
+	//debug output sky vertex color
+	//output.oColor.xyz = input.iAccumColor;
+	
+	
+	output.oColor.xyz 	= lerp( weatherColor, output.oColor.xyz, weatherMultiplier );
+	return output;
+}

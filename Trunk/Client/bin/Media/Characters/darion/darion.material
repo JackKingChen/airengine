@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Materials>
+    <Material Name="texturea0580" TextureCount="1">
+<Technique Name="Default">
+<Pass TextureCount="1">
+        <TextureUnit File="a0580.bmp" Mipmap="0" Filter="TEXF_LINEAR" AddressMode="TADDRESS_WRAP">
+<TextureStage Stage="0">
+<TextureStageState Type="TSS_COLOROP" Value="TOP_MODULATE"/>
+<TextureStageState Type="TSS_COLORARG1" Value="TA_TEXTURE"/>
+<TextureStageState Type="TSS_COLORARG2" Value="TA_DIFFUSE"/>
+            
+</TextureStage>
+</TextureUnit>        
+<Shader CullMode="CCW" ZBuffer="TRUE" ZWrite="TRUE" Lighting="FALSE"/>
+</Pass>
+</Technique>
+<LightParam DIFFUSE="(1.0,1.0,1.0,1.0)" SPECULAR="(0.0,0.0,0.0,1.0)" EMISSIVE="(0.0,0.0,0.0,1.0)" AMBIENT="(1.0,1.0,1.0,1.0)" SHINESS="255.0"/>
+</Material>
+</Materials>

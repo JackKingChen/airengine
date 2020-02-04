@@ -1,0 +1,69 @@
+description                length  type      comments
+-------------------------  ------  --------  -----------------------------------
+[header]
+  magic token              4       const     "CMF\0"
+  file version             4       integer   700
+  number of submeshes      4       integer
+
+[first submesh]
+  material name            64       string
+  number of vertices       4       integer
+  number of faces          4       integer
+  number of lod steps      4       integer   number of vertices to collapse
+  number of springs        4       integer   number of springs
+  number of maps           4       integer
+
+  [first vertex]
+    position (x y z)               string
+    mapCount        4       integer
+    position x             4       float     position in model space
+    position y             4       float
+    position z             4       float
+    normal x               4       float     normal in model space
+    normal y               4       float
+    normal z               4       float
+    collapse id            4       integer   index to vertex to collapse to
+    face collapse count    4       integer   number of collapsing faces when
+                                             this vertex gets collapsed
+    [first map]
+      u coordinate         4       float     map coordinates
+      v coordinate         4       float
+
+    [all other maps]
+      ...
+
+    number of influences   4       integer
+
+    [first influence]
+      bone id              4       integer   index to bone
+      weight               4       float     weight of influence (1.0 == 100%)
+
+    [all other influences]
+      ...
+
+    {physical property (only stored when #springs > 0 !)]
+      weight               4       float     weight of vertex for cloth-/hair-
+                                             animation (0.0 == rigid)
+
+  [all other vertices]
+    ...
+
+  [first spring]
+    vertex id 1            4       integer   index to vertex
+    vertex id 2            4       integer   "
+    spring coefficient     4       float
+    idle length            4       float     rest length of the spring
+
+  [all other springs]
+    ...
+
+  [first face]
+    vertex id 1            4       integer   index to vertex
+    vertex id 2            4       integer   "
+    vertex id 3            4       integer   "
+
+  [all other faces]
+    ...
+
+[all other submeshes]
+  ...

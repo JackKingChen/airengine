@@ -1,0 +1,65 @@
+
+struct VS_INPUT
+{
+	float4 iPosition	        : POSITION;
+	float4 iColor				: COLOR0;
+	float2 iUV                  : TEXCOORD0;
+};
+
+struct VS_OUTPUT
+{
+	float4 oPosition			: POSITION;
+	float4 oUVYLength       	: TEXCOORD0;
+};
+
+struct PS_INPUT
+{
+	float4 iPosition			: SV_POSITION;
+	float4 iUVYLength       	: TEXCOORD0;
+};
+
+struct PS_OUTPUT
+{
+	float4 oColor				: COLOR;
+};
+
+cbuffer cbMoon
+{
+    float4x4 	wvpMatrix;
+    float4x4	worldMatrix;
+    float3 		cameraPos;
+};
+
+Texture2D       texMoon;
+SamplerState 	uMoon;// : register(s0);
+
+
+VS_OUTPUT VSMain( VS_INPUT input )
+{
+	VS_OUTPUT output = (VS_OUTPUT)0;
+
+    // Clip space position
+	output.oPosition   = mul( input.iPosition, wvpMatrix );
+	// World position
+	float3 ObjectSpacePosition = mul( input.iPosition, worldMatrix ).xyz - cameraPos;
+
+    // UV
+    output.oUVYLength.xy = input.iUV;
+    // Y
+    output.oUVYLength.z  = ObjectSpacePosition.y;
+    // Length
+    output.oUVYLength.w  = length(ObjectSpacePosition);
+    
+    return output;
+}
+
+
+PS_OUTPUT PSMain( PS_INPUT input ) : SV_TARGET
+{
+	PS_OUTPUT output = (PS_OUTPUT)0;
+    // Output color
+    output.oColor = texMoon.Sample( uMoon, input.iUVYLength.xy );
+    output.oColor.w *= saturate( (input.iUVYLength.z / input.iUVYLength.w) * 3.5f );
+    
+    return output;
+}

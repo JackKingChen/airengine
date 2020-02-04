@@ -1,0 +1,72 @@
+//  Constructs a Z-axis rotation matrix
+float3x3 RotationMatrix_zAxis(float fAngle)
+{
+    // compute sin/cos of fAngle
+    float2 vSinCos;
+    sincos(fAngle, vSinCos.x, vSinCos.y);
+
+    return float3x3(
+		vSinCos.y, -vSinCos.x,  0.0f, 
+		vSinCos.x, vSinCos.y,   0.0f, 
+		0.0f,      0.0f,        1.0f);
+}
+
+//  Constructs a Y-axis rotation matrix
+float3x3 RotationMatrix_yAxis(float fAngle)
+{
+    // compute sin/cos of fAngle
+    float2 vSinCos;
+    sincos(fAngle, vSinCos.x, vSinCos.y);
+
+    return float3x3(
+                vSinCos.y,  0.0f, vSinCos.x,
+                0.0f,       1.0f, 0.0f,
+                -vSinCos.x, 0.0f, vSinCos.y);
+}
+
+//  Constructs a X-axis rotation matrix
+float3x3 RotationMatrix_xAxis(float fAngle)
+{
+    // compute sin/cos of fAngle
+    float2 vSinCos;
+    sincos(fAngle, vSinCos.x, vSinCos.y);
+
+    return float3x3(
+                1.0f, 0.0f,      0.0f,
+                0.0f, vSinCos.y, -vSinCos.x,
+                0.0f, vSinCos.x, vSinCos.y);
+}
+
+float3x3 RotationMatrix_angles(float pitch, float yaw)
+{
+    float  sp, sy, cp, cy;
+    sincos(yaw, sy, cy);
+    sincos(pitch, sp, cp);
+    return float3x3(cp * cy, -sy, sp * cy,
+                    cp * sy,  cy, sp * sy,
+                        -sp,   0,      cp
+                   );
+}
+
+float3x3 RotationMatrix_angles(float pitch, float yaw, float roll)
+{
+    float sr, sp, sy, cr, cp, cy;
+    sincos(yaw, sy, cy);
+    sincos(pitch, sp, cp);
+    sincos(roll, sr, cr);
+    return float3x3(cp * cy, sr * sp * cy + cr * -sy, cr * sp * cy + -sr * -sy,
+                    cp * sy, sr * sp * sy + cr * cy,  cr * sp * sy + -sr * cy,
+                    -sp,     sr * cp,                 cr * cp
+                   );
+}
+
+float3x3 RotationMatrix_AxisRadian(float3 axis, float angle)
+{
+    float fCos = cos(angle);
+    float fSin = sin(angle);
+    float t = 1.0 - fCos;
+    return float3x3(axis.x * axis.y * t + fCos, axis.x * axis.y * t + axis.z * fSin, axis.x * axis.z * t - axis.y * fSin,
+                    axis.x * axis.y * t - axis.z * fSin, axis.y * axis.y * t + fCos,  axis.y * axis.z * t + axis.x * fSin,
+                    axis.x * axis.z * t + axis.y * fSin, axis.y * axis.z * t - axis.x * fSin, axis.z * axis.z * t + fCos
+                   );
+}

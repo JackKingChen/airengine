@@ -1,0 +1,26 @@
+struct PS_OUTPUT
+{
+    float4 Color : COLOR0;
+};
+
+struct PS_INPUT
+{
+    float2 Depth : TEXCOORD0;
+    float2 uvCoords : TEXCOORD1;
+};
+
+float farPlane;
+
+sampler sampMesh;  //meshµÄÎÆÀí
+
+PS_OUTPUT PSMain(PS_INPUT input)
+{
+    float4 texColor = tex2D(sampMesh, input.uvCoords);
+    clip(texColor.a - 0.2);
+    PS_OUTPUT output = (PS_OUTPUT)0;   
+        
+    float depth = input.Depth.x;
+    output.Color = float4( depth, 0, 0, 1 );
+     
+    return output; 
+}

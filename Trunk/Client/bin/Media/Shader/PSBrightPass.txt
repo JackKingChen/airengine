@@ -1,0 +1,30 @@
+
+float luminance = 0.08;
+static const float fMiddleGray = 0.18;
+static const float fWhiteCutoff = 0.8f;
+
+sampler2D srcColor;
+
+
+
+struct PS_INPUT
+{
+	float4 tex0:TEXCOORD0;
+};
+
+struct PS_OUTPUT
+{
+	float4 color:COLOR;
+};
+
+PS_OUTPUT PSMain(PS_INPUT input )
+{
+	PS_OUTPUT output = (PS_OUTPUT)0; 
+	output.color = tex2D(srcColor, input.tex0.xy) ;
+	output.color *= fMiddleGray / (luminance + 0.001f);
+	output.color *= (1.0f + (output.color/(fWhiteCutoff * fWhiteCutoff )));
+	output.color -= 5.0f;
+	output.color = max(output.color, 0.0f);
+	output.color /= (10.0f + output.color);
+	return output;
+}

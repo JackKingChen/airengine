@@ -1,0 +1,51 @@
+cbuffer cbWater
+{
+    matrix wvpMatrix;
+    matrix worldMatrix;
+    matrix textureProjMatrix;
+    matrix WorldViewMatrix;
+    float4 clipPlane;
+};
+
+float2 baseUVScale;
+
+struct VS_INPUT
+{
+    float3 position 	:   POSITION;
+    //float3 normal 		:  	NORMAL;
+    //float3 tangent		:	TANGENT;
+    float4 color 		:  	COLOR;
+    float2 uvCoords 	:   TEXCOORD;
+};
+
+
+struct VS_OUTPUT
+{
+    float4 position 	:	SV_POSITION;
+    float4 posWorld 	:   TEXCOORD0;
+    float4 color 		:	COLOR0;
+    float2 texCoords 	:   TEXCOORD1;
+    float4 outTexProj 	:	TEXCOORD2;
+    //float4 normalWorld 	: 	TEXCOORD3;
+    float  DepthInView 	: 	TEXCOORD4;
+    //float2 intTexCoords	:	TEXCOORD5;
+};
+
+
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+    VS_OUTPUT output = (VS_OUTPUT)0;
+	
+    output.position = mul(float4(input.position, 1.0), wvpMatrix);
+    //input.position.w = 1.0;
+    output.posWorld = mul(float4(input.position, 1.0), worldMatrix );
+    output.texCoords = input.uvCoords;// * baseUVScale;
+    output.color = input.color;
+    output.outTexProj = mul(float4(input.position, 1.0), textureProjMatrix);
+    //float4 vNormal = float4( input.normal, 0 );
+    //output.normalWorld = mul(vNormal, worldMatrix);
+    
+    output.DepthInView = mul(float4(input.position, 1.0), WorldViewMatrix).z;
+	
+    return output;
+}

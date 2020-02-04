@@ -1,0 +1,148 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+IDD_PANEL DIALOGEX 0, 0, 260, 340
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CTEXT           "Author: liangairan",IDC_STATIC,7,7,246,21
+    CONTROL         "",IDC_EDIT,"CustEdit",WS_TABSTOP,79,181,35,10
+    CONTROL         "",IDC_SPIN,"SpinnerControl",0x0,117,181,7,10
+    LTEXT           "Spinner Cust Control:",IDC_STATIC,15,181,67,8
+    PUSHBUTTON      "Export",IDC_BTN_EXPORT,7,261,63,14
+    CONTROL         "Left Hand Coordinate",IDC_CHK_LEFTHAND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,28,96,10
+    PUSHBUTTON      "Export animate only",IDC_BTN_EXPORT_ANIMATION,7,285,80,14
+    LTEXT           "Start Frame",IDC_STATIC_STARTFRAME,15,165,45,8
+    EDITTEXT        IDC_EDIT_StartFrame,63,163,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "End Frame",IDC_STATIC_EndFrame,121,165,37,8
+    EDITTEXT        IDC_EDIT_EndFrame,169,163,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Skeletal File:",IDC_STATIC,16,199,57,8
+    EDITTEXT        IDC_EDIT_SKELETAL_FILE,16,215,79,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_CHOOSE_FILE,101,215,28,14
+    EDITTEXT        IDC_EDIT_ANIMATION_NAME,161,285,47,14,ES_AUTOHSCROLL
+    LTEXT           "Animation name",IDC_STATIC,92,287,60,8
+    PUSHBUTTON      "Export Static Mesh",IDC_BTN_EXPORT_STATICMESH,7,238,81,14
+    CONTROL         "Y-UP",IDC_CHECK_YUP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,28,32,10
+    CONTROL         "Export Material",IDC_CHECK_EXPORT_MATERIAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,46,76,10
+    EDITTEXT        IDC_EDT_MATERIAL,99,44,76,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "Export vertex animation",IDC_BTN_EXPORT_VERTEXANIMATION,7,307,101,14
+    CONTROL         "Save as binary",IDC_CHK_SAVEASBINARY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,66,72,10
+    CONTROL         "Share skeleton",IDC_CHK_SHARE_SKELETON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,100,240,72,10
+    GROUPBOX        "VertexAnimation",IDC_STATIC,15,113,226,45
+    CONTROL         "position",IDC_CHK_POSITION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,132,48,10
+    CONTROL         "uv coords",IDC_CHK_UV,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,77,132,52,10
+    CONTROL         "color",IDC_CHK_COLOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,132,36,10
+    CONTROL         "export vertex animation",IDC_CHK_EXPORT_VERTEXANIMATION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,88,108,10
+    CONTROL         "export skeletal animation",IDC_CHK_EXPORT_SKELETAL_ANIMATION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,99,67,116,10
+END
+
+
+ //IMAGE_FILTER_COMPOSITOR_TYPE
+
+//(!UI_BY_MAX)
+
+ //SHADER_TYPE
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE
+BEGIN
+    IDD_PANEL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 101
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 149
+    END
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+
+#endif    // APSTUDIO_INVOKED
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    IDS_CATEGORY            "export"
+    IDS_CLASS_NAME          "MyExport"
+    IDS_PARAMS              "Parameters"
+    IDS_SPIN                "Spin"
+    IDS_VERSION             "AIR Version"
+    IDS_PROGRESS            "AIR File export running"
+ //TEX_TYPE
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
+

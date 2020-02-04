@@ -1,0 +1,125 @@
+#include "VertexDef_5.txt"
+#include "PSLightPrePass_5.txt"
+Texture2D texMesh;
+SamplerState samplerMesh;    //mesh自己的纹理
+//sampler samplerLight;   //lightprepass中的lightbuffer
+
+cbuffer PSMesh
+{
+    float4  ambientColor; 
+    float3 	cameraPos;
+    float3 	ks;
+    float3	kd;
+    float3 	ka;
+
+//模型纹理自发光
+#ifdef TEX_LUMINANCE 
+    float 	TLWholeMesh; 	//是否针对整个模型进行加亮, 0:通过samplerTL的alpha通道进行加亮; 1:整个模型通过统一的TLStrength进行加亮
+	float4 	TLColor; 		//发光颜色
+	float4	TLStrength; 	//发光通道的强度
+#endif
+};
+
+
+//模型纹理自发光
+#ifdef TEX_LUMINANCE 
+Texture2D texTL;
+SamplerState samplerTL; 		//控制模型自发光的纹理, 通过alpha通道决定发光强度
+	float4  calTexLuminance( float4 dstColor, float2 uvCoord )
+	{
+		float4 lumColor = TLColor * TLStrength;
+		return ( TLWholeMesh == 1.0 ? (lumColor * dstColor) : (texTL.Sample(samplerTL, uvCoord).a * lumColor + dstColor) );
+	}
+#endif
+
+
+#ifdef SHADOWMAP
+	#include "PSShadowmapInclude_5.txt"
+	#include "Fog_5.txt"
+	#ifdef LIGHT_PRE_PASS
+		#define PS_INPUT PS_MeshLPPWithShadowInput
+	#else
+		#define PS_INPUT PS_MeshAcceptShadowInput
+	#endif
+#elif defined(LIGHT_PRE_PASS)
+	#define PS_INPUT PS_MeshLPPInput
+#else
+	#define PS_INPUT PS_MeshInput
+#endif
+
+
+
+float2 postProjToScreen(float4 position) 
+{     
+    float2 screenPos = position.xy / position.w;     
+    return (0.5f * (float2(screenPos.x, -screenPos.y) + 1)); 
+}   
+
+
+//模型接收阴影
+#ifdef SHADOWMAP
+	float4 PSMain(PS_INPUT input) : SV_TARGET
+	{
+	    float4 colorOutput;
+        float2 vPos = input.position.xy / input.position.w;
+	
+	    colorOutput = texMesh.Sample(samplerMesh, input.texCoords);
+        clip(colorOutput.a - 0.5);
+	    //colorOutput *= input.color;
+	
+	    float shadow = CaculateShadow16(vPos, input.posInLight, ambientColor);
+	
+		//受到光照
+		#ifdef LIGHT_PRE_PASS
+        colorOutput *= input.color;
+		    float2 scrCoord = postProjToScreen(input.posProj); 
+		    float4 light = CaculateLight(scrCoord); //tex2D(samplerLight, scrCoord);   
+		
+		    colorOutput.rgb = saturate((ka * ambientColor.rgb + kd * light.rgb + ks * light.aaa) * colorOutput.rgb) * shadow;
+		
+		    //colorOutput *= float4(shadow, shadow, shadow, 1);
+		#else
+            float4 tempColor = input.color * float4(shadow, shadow, shadow, 1);
+            tempColor.rgb = clamp(tempColor.rgb, float3(shadow, shadow, shadow), input.color);
+		    colorOutput *= tempColor;
+		#endif
+	
+		//模型纹理自发光
+		#ifdef TEX_LUMINANCE 
+			colorOutput = calTexLuminance( colorOutput, input.texCoords );
+		#endif
+	
+	    colorOutput.rgb = LerpColorWithFog(colorOutput.rgb, cameraPos, input.posWorld);
+	
+	    return colorOutput;
+	}
+#else
+	float4 PSMain(PS_INPUT input) : SV_TARGET
+	{
+	    float4 texCol = texMesh.Sample(samplerMesh, input.texCoords);
+        clip(texCol.a - 0.5);
+	    float4 colorOutput = texCol;
+	    
+		//受到光照  
+		#ifdef LIGHT_PRE_PASS
+		    //屏幕坐标
+		    float2 scrCoord = postProjToScreen(input.posProj); 
+		    
+		    float4 light = CaculateLight(scrCoord);   
+		       
+		    float3 lighting = saturate((ka * ambientColor.rgb + kd * light.rgb + ks * light.aaa) * texCol.xyz); // + light.aaa);   
+		    colorOutput = float4(lighting, texCol.a);
+        #else
+        colorOutput *= input.color;
+		#endif
+	
+		//模型纹理自发光
+		#ifdef TEX_LUMINANCE 
+			colorOutput = calTexLuminance( colorOutput, input.texCoords );
+		#endif
+		return colorOutput;
+	}
+#endif
+
+
+

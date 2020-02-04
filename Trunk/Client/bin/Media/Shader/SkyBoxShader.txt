@@ -1,0 +1,53 @@
+
+struct VS_INPUT
+{
+    float4 position : 	POSITION;
+    float3 uvCoords : 	TEXCOORD0;
+    float4 color : 	COLOR;
+};
+
+struct VS_OUTPUT
+{
+    float4 position : 	POSITION;
+    float3 texCoords : 	TEXCOORD0;
+};
+
+
+matrix  wvpMatrix;
+
+
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+    VS_OUTPUT output;
+
+    output.position = mul(input.position, wvpMatrix);
+    output.texCoords = input.uvCoords;
+   
+    return output;
+};
+
+sampler EnvironmentSampler;
+
+
+struct PS_OUTPUT
+{
+    float4 Color : COLOR0;
+};
+
+
+struct PS_INPUT
+{
+    float4 position : 	    POSITION;
+    float3 texCoords : 	    TEXCOORD0;
+};
+
+
+PS_OUTPUT PSMain(PS_INPUT input)
+{
+    PS_OUTPUT output = (PS_OUTPUT)0;
+    
+    output.Color = texCUBE( EnvironmentSampler, input.texCoords );
+
+    return output;
+}
+

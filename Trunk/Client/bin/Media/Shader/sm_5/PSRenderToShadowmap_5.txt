@@ -1,0 +1,17 @@
+struct VS_INPUT
+{
+    float4 position : SV_POSITION;
+    float2 uvCoords : TEXCOORD0;
+};
+
+Texture2D tex0;
+SamplerState Samp0;
+//float4  ambientColor; 
+//sampler shadowmap;
+
+float4 PSMain(VS_INPUT input) : SV_TARGET
+{
+    float4 color = tex0.Sample(Samp0, input.uvCoords);
+    clip(color.a - 0.1);
+    return color;
+}

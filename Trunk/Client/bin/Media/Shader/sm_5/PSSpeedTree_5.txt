@@ -1,0 +1,81 @@
+Texture2D texMesh;
+SamplerState samplerMesh;    //mesh自己的纹理
+#include "SpeedTree_5.txt"
+#include "PSShadowmapInclude_5.txt"
+#include "PSLightPrePass_5.txt"
+
+cbuffer cbPSSpeedTree
+{
+    float4 fogColor;
+    float2 halfPixel;
+    float4  ambientColor; 
+    float3 cameraPos;
+    float3 ks;
+    float3 kd;
+    float3 ka;
+};
+
+float2 postProjToScreen(float4 position) 
+{     
+    float2 screenPos = position.xy / position.w;     
+    return (0.5f * (float2(screenPos.x, -screenPos.y) + 1)); 
+}   
+
+
+#ifdef SHADOWMAP
+  #ifdef LIGHT_PRE_PASS
+#define PS_INPUT PS_SpeedTreeLPPWithShadowmapInput
+  #else
+#define PS_INPUT PS_SpeedTreeAcceptShadowmapInput
+  #endif
+#elif defined(LIGHT_PRE_PASS)
+#define PS_INPUT PS_SpeedTreeLPPInput
+#else
+//什么也没定义
+#define PS_INPUT PS_SpeedTreeInput
+#endif
+
+
+#ifdef SHADOWMAP
+float4 PSMain(PS_INPUT input) : SV_TARGET
+{
+    float2 vPos = input.position.xy / input.position.w;
+    float4 output = texMesh.Sample(samplerMesh, input.texCoords) * input.color;
+    clip(output.a - 0.2);
+
+    float shadow = CaculateShadow16(vPos, input.posInLight, ambientColor);
+#ifdef LIGHT_PRE_PASS
+    float2 scrCoord = postProjToScreen(input.posProj); 
+    float4 light = CaculateLight(scrCoord); //tex2D(samplerLight, scrCoord);   
+
+    output.rgb = saturate((ka * ambientColor.rgb + kd * light.rgb + ks * light.aaa) * output.rgb); 
+#endif
+    output *= float4(shadow, shadow, shadow, 1);
+
+    output.rgb = lerp(fogColor.rgb, output.rgb, input.fogFactor);
+
+    return output;
+}
+#else
+float4 PSMain(PS_INPUT input) : SV_TARGET
+{
+    float4 output = texMesh.Sample(samplerMesh, input.texCoords) * input.color;
+    clip(output.a - 0.2);
+#ifdef LIGHT_PRE_PASS
+    float2 scrCoord = postProjToScreen(input.posProj); 
+    float4 light = CaculateLight(scrCoord); //tex2D(samplerLight, scrCoord);   
+
+    output.rgb = saturate((ka * ambientColor.rgb + kd * light.rgb + ks * light.aaa) * output.rgb); 
+#endif
+
+    output.rgb = lerp(fogColor.rgb, output.rgb, input.fogFactor);
+
+    return output;
+}
+#endif
+
+
+
+
+
+

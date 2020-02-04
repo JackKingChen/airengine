@@ -1,0 +1,29 @@
+
+struct VS_INPUT
+{
+    float4 position : POSITION;
+    float3 normal: NORMAL;
+    vector color : COLOR;
+    float2 uvCoords : TEXCOORD;
+};
+
+struct VS_OUTPUT
+{
+    float4 Position   : POSITION; 
+    float2 Depth : TEXCOORD0;
+    float2 uvCoords : TEXCOORD1;
+};
+
+matrix wvpMatrix;
+matrix WorldViewMatrix;
+matrix worldMatrix;
+
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+    VS_OUTPUT output = (VS_OUTPUT)0;     
+    output.Position = mul(input.position, wvpMatrix);
+    float4 wpos = mul(input.position, WorldViewMatrix);
+    output.Depth.xy = wpos.zw;
+    output.uvCoords = input.uvCoords;
+    return output; 
+}

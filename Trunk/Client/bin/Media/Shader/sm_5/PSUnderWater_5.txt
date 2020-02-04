@@ -1,0 +1,39 @@
+//ÏñËØÅ¤Çú
+Texture2D TextureRTTUnderWater;
+SamplerState samRTTUnderWater;
+Texture2D TextureBump1;	
+SamplerState samBump1;
+Texture2D TextureBump2;
+SamplerState samBump2;
+
+struct VS_INPUT
+{
+    float4 position     : POSITION;
+    float4 color        : COLOR;
+    float2 uvCoords     : TEXCOORD;
+};
+
+struct VS_OUTPUT
+{
+    float4  pos          : SV_POSITION;
+    float2  texCoord     : TEXCOORD0;
+};
+
+cbuffer cbUnderWater
+{
+	float frameTime;	
+};
+
+
+float4 PSUnderWater(VS_OUTPUT input) : SV_TARGET
+{
+    float4 output;
+    
+    float2 bump1  = TextureBump1.Sample(samBump1, input.texCoord + (frameTime * 0.04)).xy;
+    float2 bump2	= TextureBump2.Sample(samBump2, input.texCoord - (frameTime * 0.04)).xy;
+    float2 texel  = input.texCoord + bump1 / 60 + bump2 / 50;
+    
+    output = TextureRTTUnderWater.Sample( samRTTUnderWater, texel );
+    
+    return output;
+}

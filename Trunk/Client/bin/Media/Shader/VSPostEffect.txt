@@ -1,0 +1,35 @@
+
+struct VS_INPUT
+{
+    float4 position     : POSITION;
+    float4 color        : COLOR;
+    float2 uvCoords     : TEXCOORD;
+};
+
+struct VS_OUTPUT
+{
+    float4  pos          : POSITION0;
+    float4 color        : COLOR;
+    float2  texCoord     : TEXCOORD0;
+};
+
+
+float   frameTime;
+float4x4 projectionMatrix;
+ 
+VS_OUTPUT VSMain(VS_INPUT input)
+{
+    VS_OUTPUT ouput = (VS_OUTPUT)0;
+    ouput.pos = mul(float4( input.position.xyz, 1.0f ), projectionMatrix);
+    ouput.color = input.color;
+    ouput.texCoord = input.uvCoords;
+    /*
+    input.position.xy = sign( input.position.xy );
+    ouput.pos = float4( input.position.xy, 0.0f, 1.0f );
+ 
+    // get into range [0,1]
+    ouput.texCoord = (float2(ouput.pos.x, -ouput.pos.y) + 1.0f)/2.0f;
+    */
+    return ouput;
+}
+

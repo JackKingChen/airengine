@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Materials>
+    <Material Name="m_bgda003a_a1" template="skinmesh_template.xml">
+<MaterialParams>
+<var name="samplerMesh" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="m_bgda003a_a1.dds"/>
+<var name="alphaTest" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="0.2"/>
+</MaterialParams>
+<SamplerStateObject name="samplerMesh" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</Material>
+<Material Name="m_bgda003a_b1" template="skinmesh_template.xml">
+<MaterialParams>
+<var name="samplerMesh" constantType="CS_Sampler" VariantType="VAR_TEXTURE" value="m_bgda003a01_b1.dds"/>
+<var name="alphaTest" constantType="CS_FLOAT" VariantType="VAR_FLOAT" value="0.2"/>
+</MaterialParams>
+<SamplerStateObject name="samplerMesh" stage="0" Filter="TEXF_LINEAR" AddressU="TADDRESS_WRAP" AddressV="TADDRESS_WRAP" AddressW="TADDRESS_WRAP"/>
+</Material>
+</Materials>

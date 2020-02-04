@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Characters>
+    <Character id="0" name="TestMonster" meshfile="ironturtle.airmesh"/>
+<Character id="0" name="TestMonster2" meshfile="smalldinosor.airmesh"/>
+<Character id="0" name="梁蔼然" meshfile="m_bgda003a.airmesh"/>
+</Characters>
